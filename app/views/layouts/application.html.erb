@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Student Management</title>
+</head>
+<body>
+<header>
+  <h1>Student Management System</h1>
+  <nav>
+    <%= link_to "Dashboard",
+              dashboard_path %>
+    <%= link_to "Students List",
+              students_path %>
+    <%= link_to "Add Student",
+              new_student_path %>
+
+  </nav><hr>
+</header>
+<%= yield %>
+</body>
+</html>
