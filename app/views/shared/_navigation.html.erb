@@ -1,0 +1,42 @@
+<% if user_signed_in? %>
+  <nav class="site-nav">
+    <div class="container">
+      <ul class="nav-list">
+
+        <% if current_user.admin? %>
+          <li>
+            <%= link_to "Dashboard",
+                admin_dashboard_path,
+                class: "nav-link" %>
+          </li>
+        <% else %>
+          <li>
+            <%= link_to "Dashboard",
+                teacher_dashboard_path,
+                class: "nav-link" %>
+          </li>
+        <% end %>
+
+        <li>
+          <%= link_to "Students",
+              students_path,
+              class: "nav-link" %>
+        </li>
+
+        <li>
+          <%= link_to "Add Student",
+              new_student_path,
+              class: "btn btn-primary" %>
+        </li>
+
+        <li>
+          <%= button_to "Logout",
+              destroy_user_session_path,
+              method: :delete,
+              class: "btn btn-danger" %>
+        </li>
+
+      </ul>
+    </div>
+  </nav>
+<% end %>

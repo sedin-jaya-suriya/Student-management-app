@@ -1,0 +1,24 @@
+<h1>Admin Dashboard</h1>
+
+<p>Total Students: <%= @total_students %></p>
+<p>Total Teachers: <%= @total_teachers %></p>
+
+<h2>Students Per Teacher</h2>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Teacher Email</th>
+      <th>Students Count</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @teachers.each do |teacher| %>
+      <tr>
+        <td><%= teacher.email %></td>
+        <td><%= teacher.students_count %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

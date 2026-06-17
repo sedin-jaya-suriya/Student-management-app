@@ -1,41 +1,56 @@
-<h1> Students </h1>
-<%= form_with url: students_path, method: :get, local: true do %>
-    <%= text_field_tag :search, params[:search] %>
-    <%= submit_tag "Search" %>
-<% end %>
+<div class="card">
+        <div class="toolbar">
+                <h1>Students</h1>
+                <div class="actions">
+                        <%= link_to 'Add Student', new_student_path, class: 'btn btn-primary' %>
+                </div>
+        </div>
+        <div class="stack">
+                <%= form_with url: students_path, method: :get, local: true do %>
+                        <div class="form-row">
+                                <%= text_field_tag :search, params[:search], placeholder: 'Search by name or email', class: 'form-control' %>
+                                <%= submit_tag 'Search', class: 'btn btn-primary' %>
+                        </div>
+                <% end %>
 
-<%= form_with url: students_path, method: :get, local: true do %>
-    <%= select_tag :course, options_for_select(["Ruby","Rails","React","Java"],params[:course])%>
-    <%= submit_tag "Filter" %>
-<% end %>
+                <%= form_with url: students_path, method: :get, local: true do %>
+                        <div class="form-row">
+                                <%= select_tag :course, options_for_select(["All","Ruby","Rails","React","Java"],params[:course]), class: 'form-control' %>
+                                <%= submit_tag 'Filter', class: 'btn btn-muted' %>
+                        </div>
+                <% end %>
+        </div>
 
-<table border="1">
-    <tr>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Age</th>
-        <th>Course</th>
-        <th>City</th>
-        <th>Marks</th>
-        <th>Actions</th>
-    </tr>
-
-    <% @students.each do |student| %>
-    <tr>
-        <td><%= student.name %></td>
-        <td><%= student.email %></td>
-        <td><%= student.age %></td>
-        <td><%= student.course %></td>
-        <td><%= student.city %></td>
-        <td><%= student.marks %></td>
-        <br><br>
-        <td>
-            <%= link_to "Edit", edit_student_path(student) %>
-            <%= link_to "view", student_path(student) %>
-            <%= button_to "Delete", student_path(student), method: :delete, data:{
-                turbo_confirm: "Are you sure?"
-            }%>
-        </td> 
-    </tr>
-    <% end %>
-</table>
+        <div class="stack" style="margin-top:12px">
+                <table class="table">
+                        <thead>
+                                <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Age</th>
+                                        <th>Course</th>
+                                        <th>City</th>
+                                        <th>Marks</th>
+                                        <th>Actions</th>
+                                </tr>
+                        </thead>
+                        <tbody>
+                                <% @students.each do |student| %>
+                                        <tr>
+                                                <td><%= student.name %></td>
+                                                <td><%= student.email %></td>
+                                                <td><%= student.age %></td>
+                                                <td><%= student.course %></td>
+                                                <td><%= student.city %></td>
+                                                <td><%= student.marks %></td>
+                                                <td>
+                                                        <%= link_to 'Edit', edit_student_path(student), class: 'btn btn-muted' %>
+                                                        <%= link_to 'View', student_path(student), class: 'btn btn-muted' %>
+                                                        <%= button_to 'Delete', student_path(student), method: :delete, data: { turbo_confirm: 'Are you sure?' }, class: 'btn btn-danger' %>
+                                                </td>
+                                        </tr>
+                                <% end %>
+                        </tbody>
+                </table>
+        </div>
+</div>

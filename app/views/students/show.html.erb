@@ -1,9 +1,15 @@
-<h1>Student Details</h1>
-
-<p>Name: <%= @student.name %></p>
-<p>Email: <%= @student.email %></p>
-<p>Age: <%= @student.age %></p>
-<p>Course: <%= @student.course %></p>
-<p>City: <%= @student.city %></p>
-<p>Marks: <%= @student.marks %></p>
-<p>Result: <%= @student.result %></p>
+<div class="card student-meta">
+	<div class="info">
+		<h2><%= @student.name %></h2>
+		<p><strong>Email:</strong> <%= @student.email %></p>
+		<p><strong>Age:</strong> <%= @student.age %></p>
+		<p><strong>Course:</strong> <%= @student.course %></p>
+		<p><strong>City:</strong> <%= @student.city %></p>
+		<p><strong>Marks:</strong> <%= @student.marks %></p>
+		<p><strong>Result:</strong> <%= @student.result %></p>
+	</div>
+	<div class="text-right">
+		<%= link_to 'Edit', edit_student_path(@student), class: 'btn btn-muted' %>
+		<%= link_to 'Back', students_path, class: 'btn btn-primary' %>
+	</div>
+</div>

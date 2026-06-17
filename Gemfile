@@ -64,3 +64,7 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+
+gem "fiddle"  
+gem 'devise'
+
