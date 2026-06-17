@@ -2,23 +2,9 @@ class StudentsController < ApplicationController
   before_action :set_student, only: [:show, :edit, :update, :destroy]
 
   def index
-    if current_user.admin?
-      @students = Student.all
-    else
-      @students = current_user.students
-    end
-
-    if params[:search].present?
-      @students = @students.where(
-        "name LIKE ? OR email LIKE ?",
-        "%#{params[:search]}%",
-        "%#{params[:search]}%"
-      )
-    end
-
-    if params[:course].present? && params[:course] != "All"
-      @students = @students.where(course: params[:course])
-    end
+    @students = student_scope
+    @students = @students.search(params[:search]) if params[:search].present?
+    @students = @students.by_course(params[:course]) if params[:course].present?
   end
 
   def show
@@ -39,7 +25,7 @@ class StudentsController < ApplicationController
     end
 
     if @student.save
-      redirect_to @student
+      redirect_to @student,notice: "Student created successfully."
     else
       render :new, status: :unprocessable_entity
     end
@@ -47,7 +33,7 @@ class StudentsController < ApplicationController
 
   def update
     if @student.update(student_params)
-      redirect_to @student
+      redirect_to @student,notice: "Student updated successfully."
     else
       render :edit, status: :unprocessable_entity
     end
@@ -55,28 +41,29 @@ class StudentsController < ApplicationController
 
   def destroy
     @student.destroy
-    redirect_to students_path
+    redirect_to students_path,notice: "Student deleted successfully."
   end
 
   private
 
+  def student_scope
+    current_user.admin? ? Student.all : current_user.students
+  end
+
   def set_student
-    if current_user.admin?
-      @student = Student.find(params[:id])
-    else
-      @student = current_user.students.find(params[:id])
-    end
+    @student = student_scope.find(params[:id])
   end
 
   def student_params
-    params.require(:student).permit(
-        :name,
-        :email,
-        :age,
-        :course,
-        :city,
-        :marks,
-        :teacher_id
-    )
-    end
+    permitted = [
+      :name,
+      :email,
+      :age,
+      :course,
+      :city,
+      :marks
+    ]
+    permitted << :teacher_id if current_user.admin?
+    params.require(:student).permit(permitted)
+  end
 end

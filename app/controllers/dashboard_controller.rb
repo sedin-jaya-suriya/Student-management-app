@@ -1,13 +1,11 @@
 class DashboardController < ApplicationController
-  before_action :require_admin, only: [:admin]
-  before_action :require_teacher, only: [:teacher]
+  before_action :require_admin!, only: [:admin]
+  before_action :require_teacher!, only: [:teacher]
 
   def home
-    if current_user.admin?
-      redirect_to admin_dashboard_path
-    else
-      redirect_to teacher_dashboard_path
-    end
+    return redirect_to admin_dashboard_path if current_user.admin?
+    return redirect_to teacher_dashboard_path if current_user.teacher?
+    redirect_to root_path,alert: "Unauthorized access."
   end
 
   def admin
@@ -20,21 +18,7 @@ class DashboardController < ApplicationController
 
   def teacher
     students = current_user.students
-
     @total_students = students.count
-    @ruby_students  = students.where(course: "Ruby").count
-    @rails_students = students.where(course: "Rails").count
-    @react_students = students.where(course: "React").count
-    @java_students  = students.where(course: "Java").count
+    @course_counts = students.group(:course).count
   end
-
-  private
-
-  def require_admin
-    redirect_to teacher_dashboard_path unless current_user.admin?
-  end
-
-  def require_teacher
-    redirect_to admin_dashboard_path unless current_user.teacher?
-  end
-end
+end 
