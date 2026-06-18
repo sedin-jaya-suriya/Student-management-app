@@ -1,10 +1,9 @@
 <h1>Teacher Dashboard</h1>
 
-<p>Total Students: <%= @total_students %></p>
+<p>Total Students: <%= @total_students %><>
 <h3>Students by Course</h3>
 <% @course_counts.each do |course, count| %>
   <p>
-    <strong><%= course %> Students:</strong>
-    <%= count %>
+    <strong><%= course %> Students:</strong><%= count %>
   </p>
 <% end %>

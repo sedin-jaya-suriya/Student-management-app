@@ -29,10 +29,10 @@
 
       <div class="form-group">
         <%= f.label :course %>
-        <%= f.select :course,
-                     ["Ruby", "Rails", "React", "Java"],
-                     {},
-                     class: 'form-control' %>
+                <%= f.select :course,
+                        Student::COURSES,
+                        {},
+                class: 'form-control' %>
       </div>
     </div>
 
@@ -63,7 +63,6 @@
 
     <% else %>
 
-      <!-- IMPORTANT: auto-assign teacher for normal teacher login -->
       <%= f.hidden_field :teacher_id, value: current_user.id %>
 
     <% end %>
