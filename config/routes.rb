@@ -3,6 +3,10 @@ Rails.application.routes.draw do
   get "admin_dashboard",
     to: "dashboard#admin"
 
+  get "admin/teachers",
+    to: "dashboard#teachers",
+    as: :admin_teachers
+
   get "teacher_dashboard",
     to: "dashboard#teacher"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

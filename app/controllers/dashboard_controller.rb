@@ -1,5 +1,6 @@
 class DashboardController < ApplicationController
   before_action :require_admin!, only: [:admin]
+  before_action :require_admin!, only: [:admin, :teachers]
   before_action :require_teacher!, only: [:teacher]
 
   def home
@@ -11,6 +12,12 @@ class DashboardController < ApplicationController
   def admin
     @total_students = Student.count
     @total_teachers = User.teacher.count
+    @teachers = User.teacher.left_joins(:students)
+                    .select("users.*, COUNT(students.id) AS students_count")
+                    .group("users.id")
+  end
+
+  def teachers
     @teachers = User.teacher.left_joins(:students)
                     .select("users.*, COUNT(students.id) AS students_count")
                     .group("users.id")

@@ -1,9 +1,36 @@
-<h1>Teacher Dashboard</h1>
+<div class="py-3">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <h1 class="h3 mb-0">Teacher Dashboard</h1>
+      <small class="text-muted">Your students and course distribution</small>
+    </div>
+    <div>
+      <%= link_to 'Add Student', new_student_path, class: 'btn btn-primary' %>
+    </div>
+  </div>
 
-<p>Total Students: <%= @total_students %><>
-<h3>Students by Course</h3>
-<% @course_counts.each do |course, count| %>
-  <p>
-    <strong><%= course %> Students:</strong><%= count %>
-  </p>
-<% end %>
+  <div class="row g-3">
+    <div class="col-md-6">
+      <div class="card p-3">
+        <div class="text-muted small">Assigned Students</div>
+        <div class="fs-4 fw-bold"><%= number_with_delimiter(@total_students) %></div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card p-3">
+        <div class="text-muted small">Course Distribution</div>
+        <div class="text-muted">(Chart placeholder)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <h5>Students by Course</h5>
+    <% @course_counts.each do |course, count| %>
+      <div class="d-flex justify-content-between py-2 border-bottom">
+        <div><%= course %></div>
+        <div class="text-muted"><%= number_with_delimiter(count) %></div>
+      </div>
+    <% end %>
+  </div>
+</div>

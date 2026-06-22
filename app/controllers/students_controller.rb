@@ -63,7 +63,8 @@ class StudentsController < ApplicationController
       :city,
       :marks
     ]
-    permitted << :teacher_id if current_user.admin?
+
     params.require(:student).permit(permitted)
   end
+
 end
