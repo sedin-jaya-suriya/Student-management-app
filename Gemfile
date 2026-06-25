@@ -68,4 +68,5 @@ end
 
 gem "fiddle"  
 gem 'devise'
+gem 'jwt'
 
