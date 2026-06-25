@@ -1,0 +1,56 @@
+<div class="py-3">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <h1 class="h3 mb-0">Admin Dashboard</h1>
+      <small class="text-muted">Overview and quick actions</small>
+    </div>
+    <div>
+      <%= link_to 'Add Student', new_student_path, class: 'btn btn-primary' %>
+    </div>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-md-4">
+      <div class="card p-3">
+        <div class="text-muted small">Total Students</div>
+        <div class="fs-4 fw-bold"><%= number_with_delimiter(@total_students) %></div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card p-3">
+        <div class="text-muted small">Total Teachers</div>
+        <div class="fs-4 fw-bold"><%= number_with_delimiter(@total_teachers) %></div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card p-3">
+        <div class="text-muted small">Recent Activity</div>
+        <div class="text-muted">No recent activity</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <h5>Students Per Teacher</h5>
+    <div class="table-responsive">
+      <table class="table table-hover mt-2">
+        <thead>
+          <tr>
+            <th>Teacher</th>
+            <th class="text-end">Students</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @teachers.each do |teacher| %>
+            <tr>
+              <td><%= teacher.email %></td>
+              <td class="text-end"><%= number_with_delimiter(teacher.students_count) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  
+</div>
