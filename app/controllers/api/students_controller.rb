@@ -4,14 +4,15 @@ module Api
     #  skip_before_action :verify_authenticity_token
 
     # GET /students
+    # GET /students
     def index
       students = student_scope
-      students = students.where('name LIKE ?', "%#{params[:name]}%") if params[:name].present?
-      students = students.where(marks: params[:grade]) if params[:grade].present? # assuming grade maps to marks or course
-      students = students.select(:id, :name, :email, :age, :course, :city, :marks)
+      students = students.by_name(params[:name]) if params[:name].present?
+      students = students.by_course(params[:course]) if params[:course].present?
+      students = students.by_grade(params[:grade]) if params[:grade].present?
       render json: students, status: :ok
     end
-
+    
     # GET /students/:id
     def show
       render json: @student.slice(:id, :name, :email, :age, :course, :city, :marks), status: :ok
