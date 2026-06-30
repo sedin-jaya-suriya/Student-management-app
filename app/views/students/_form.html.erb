@@ -1,0 +1,155 @@
+<%= form_with model: @student, local: true do |f| %>
+  <div class="card">
+
+    <% if @student.errors.any? %>
+      <div class="form-group">
+        <ul>
+          <% @student.errors.full_messages.each do |message| %>
+            <li class="text-danger"><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="form-group">
+      <%= f.label :name %>
+      <%= f.text_field :name, class: "form-control" %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :email %>
+      <%= f.email_field :email, class: "form-control" %>
+    </div>
+
+    <div class="form-row">
+
+      <div class="form-group">
+        <%= f.label :age %>
+        <%= f.number_field :age, class: "form-control" %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :course %>
+
+        <%= f.select :course,
+              Student::COURSES,
+              {},
+              class: "form-control" %>
+      </div>
+
+    </div>
+
+    <div class="form-group">
+      <%= f.label :city %>
+      <%= f.text_field :city, class: "form-control" %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :marks %>
+      <%= f.number_field :marks, class: "form-control" %>
+    </div>
+
+    <% if current_user.admin? %>
+
+      <div class="form-group">
+        <%= f.label :teacher_id, "Assign Teacher" %>
+
+        <%= f.collection_select(
+              :teacher_id,
+              User.teacher,
+              :id,
+              :email,
+              { prompt: "Select Teacher" },
+              { class: "form-control" }
+            ) %>
+      </div>
+
+    <% else %>
+
+      <%= f.hidden_field :teacher_id, value: current_user.id %>
+
+    <% end %>
+
+    <hr>
+
+    <h4>Profile Photo</h4>
+
+    <div class="form-group">
+
+      <%= f.label :profile_photo %>
+
+      <%= f.file_field :profile_photo,
+            class: "form-control",
+            accept: ".jpg,.jpeg,.png" %>
+
+    </div>
+
+    <% if @student.profile_photo.attached? %>
+
+      <div class="mb-3">
+
+        <%= image_tag @student.profile_photo,
+              width: 150,
+              class: "img-thumbnail" %>
+
+      </div>
+
+    <% end %>
+
+    <hr>
+
+    <h4>Documents</h4>
+
+    <div class="form-group">
+
+      <%= f.label :documents %>
+
+      <%= f.file_field :documents,
+            multiple: true,
+            class: "form-control",
+            accept: ".pdf,.jpg,.jpeg,.png" %>
+
+    </div>
+
+    <% if @student.documents.attached? %>
+
+      <table class="table table-bordered">
+
+        <thead>
+
+          <tr>
+            <th>Document</th>
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          <% @student.documents.each do |document| %>
+
+            <tr>
+
+              <td><%= document.filename %></td>
+
+            </tr>
+
+          <% end %>
+
+        </tbody>
+
+      </table>
+
+    <% end %>
+
+    <div class="form-actions mt-3">
+
+      <%= f.submit "Save", class: "btn btn-primary" %>
+
+      <%= link_to "Cancel",
+            students_path,
+            class: "btn btn-secondary" %>
+
+    </div>
+
+  </div>
+<% end %>
