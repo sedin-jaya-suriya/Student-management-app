@@ -4,7 +4,6 @@ module Api
     #  skip_before_action :verify_authenticity_token
 
     # GET /students
-    # GET /students
     def index
       students = student_scope
       students = students.by_name(params[:name]) if params[:name].present?
@@ -12,7 +11,7 @@ module Api
       students = students.by_grade(params[:grade]) if params[:grade].present?
       render json: students, status: :ok
     end
-    
+
     # GET /students/:id
     def show
       render json: @student.slice(:id, :name, :email, :age, :course, :city, :marks), status: :ok
@@ -67,7 +66,8 @@ module Api
     end
 
     def student_params
-      params.require(:student).permit(:name, :email, :age, :course, :city, :marks, :teacher_id)
+      params.require(:student).permit(:name, :email, :age, :course, :city, :marks, :teacher_id
+      , :profile_photo, documents:[])
     end
   end
 end

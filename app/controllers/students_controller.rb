@@ -1,5 +1,12 @@
 class StudentsController < ApplicationController
-  before_action :set_student, only: [:show, :edit, :update, :destroy]
+  before_action :set_student, only: [
+    :show,
+    :edit,
+    :update,
+    :destroy,
+    :remove_profile_photo,
+    :remove_document
+  ]
 
   def index
     @students = student_scope
@@ -11,7 +18,7 @@ class StudentsController < ApplicationController
   end
 
   def new
-    @student = Student.new  
+    @student = Student.new
   end
 
   def edit
@@ -19,13 +26,12 @@ class StudentsController < ApplicationController
 
   def create
     @student = Student.new(student_params)
-
     if current_user.teacher?
       @student.teacher = current_user
     end
 
     if @student.save
-      redirect_to @student,notice: "Student created successfully."
+      redirect_to @student, notice: "Student created successfully."
     else
       render :new, status: :unprocessable_entity
     end
@@ -33,7 +39,7 @@ class StudentsController < ApplicationController
 
   def update
     if @student.update(student_params)
-      redirect_to @student,notice: "Student updated successfully."
+      redirect_to @student, notice: "Student updated successfully."
     else
       render :edit, status: :unprocessable_entity
     end
@@ -41,7 +47,22 @@ class StudentsController < ApplicationController
 
   def destroy
     @student.destroy
-    redirect_to students_path,notice: "Student deleted successfully."
+    redirect_to students_path, notice: "Student deleted successfully."
+  end
+
+  def remove_profile_photo
+    @student.profile_photo.purge
+
+    redirect_to @student,
+                notice: "Profile photo deleted successfully."
+  end
+
+  def remove_document
+    document = @student.documents.find(params[:attachment_id])
+    document.purge
+
+    redirect_to @student,
+                notice: "Document deleted successfully."
   end
 
   private
@@ -55,16 +76,16 @@ class StudentsController < ApplicationController
   end
 
   def student_params
-    permitted = [
+    params.require(:student).permit(
       :name,
       :email,
       :age,
       :course,
       :city,
-      :marks
-    ]
-
-    params.require(:student).permit(permitted)
+      :marks,
+      :teacher_id,
+      :profile_photo,
+      documents: []
+    )
   end
-
 end
