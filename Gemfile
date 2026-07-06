@@ -69,4 +69,6 @@ end
 gem "fiddle"  
 gem 'devise'
 gem 'jwt'
+gem "prawn"
+gem "dotenv-rails", groups: [:development, :test]
 

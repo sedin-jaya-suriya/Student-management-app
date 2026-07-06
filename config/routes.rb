@@ -16,15 +16,15 @@ Rails.application.routes.draw do
 
   root "dashboard#home"
 
-  # Web Routes
+
   resources :students do
     member do
       delete :remove_profile_photo
       delete :remove_document
+      get :download_report
     end
   end
 
-  # API Routes
   namespace :api, defaults: { format: :json } do
     post :login, to: "sessions#create"
 

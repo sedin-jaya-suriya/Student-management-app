@@ -25,12 +25,25 @@ class StudentsController < ApplicationController
   end
 
   def create
-    @student = Student.new(student_params)
+  @student = Student.new(student_params)
+
     if current_user.teacher?
       @student.teacher = current_user
     end
 
     if @student.save
+      StudentMailer.welcome_email(@student).deliver_now
+
+      if @student.teacher.present?
+        TeacherMailer.new_student(@student).deliver_now
+      end
+
+      if @student.documents.attached?
+        @student.documents.each do |document|
+          StudentMailer.assignment_submitted(@student, document).deliver_now
+        end
+      end
+
       redirect_to @student, notice: "Student created successfully."
     else
       render :new, status: :unprocessable_entity
@@ -38,7 +51,24 @@ class StudentsController < ApplicationController
   end
 
   def update
+    old_marks = @student.marks
+    old_teacher = @student.teacher_id
+
     if @student.update(student_params)
+      if old_marks != @student.marks
+        StudentMailer.marks_published(@student).deliver_now
+      end
+
+      if old_teacher != @student.teacher_id
+        TeacherMailer.new_student(@student).deliver_now
+      end
+
+      if params.dig(:student, :documents).present?
+        @student.documents.last(params[:student][:documents].count).each do |document|
+          StudentMailer.assignment_submitted(@student, document).deliver_now
+        end
+      end
+
       redirect_to @student, notice: "Student updated successfully."
     else
       render :edit, status: :unprocessable_entity
@@ -52,17 +82,39 @@ class StudentsController < ApplicationController
 
   def remove_profile_photo
     @student.profile_photo.purge
-
-    redirect_to @student,
-                notice: "Profile photo deleted successfully."
+    redirect_to @student, notice: "Profile photo deleted successfully."
   end
 
   def remove_document
     document = @student.documents.find(params[:attachment_id])
     document.purge
 
-    redirect_to @student,
-                notice: "Document deleted successfully."
+    redirect_to @student, notice: "Document deleted successfully."
+  end
+
+  def download_report
+    @student = Student.find(params[:id])
+
+    pdf = Prawn::Document.new
+
+    pdf.text "ABC Academy"
+    pdf.move_down 10
+
+    pdf.text "Report Card"
+    pdf.move_down 10
+
+    pdf.text "Name: #{@student.name}"
+    pdf.text "Course: #{@student.course}"
+    pdf.text "Marks: #{@student.marks}"
+    pdf.text "Result: #{@student.result}"
+
+    pdf_data = pdf.render
+
+    StudentMailer.report_card(@student, pdf_data).deliver_now
+
+    send_data pdf_data,
+              filename: "ReportCard.pdf",
+              type: "application/pdf"
   end
 
   private
