@@ -33,6 +33,7 @@ class StudentsController < ApplicationController
 
     if @student.save
       StudentMailer.welcome_email(@student).deliver_now
+      StudentMailer.teacher_assigned(@student).deliver_now
 
       if @student.teacher.present?
         TeacherMailer.new_student(@student).deliver_now
@@ -60,6 +61,7 @@ class StudentsController < ApplicationController
       end
 
       if old_teacher != @student.teacher_id
+        StudentMailer.teacher_assigned(@student).deliver_now
         TeacherMailer.new_student(@student).deliver_now
       end
 

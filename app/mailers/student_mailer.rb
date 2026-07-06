@@ -11,6 +11,16 @@ class StudentMailer < ApplicationMailer
     )
   end
 
+  def teacher_assigned(student)
+    @student = student
+    @teacher = student.teacher
+
+    mail(
+        to: @student.email,
+        subject: "Your Teacher Has Been Assigned"
+    )
+    end
+
   def assignment_submitted(student, document)
     @student = student
     @document = document

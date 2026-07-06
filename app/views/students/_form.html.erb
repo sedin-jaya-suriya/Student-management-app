@@ -84,7 +84,7 @@
 
     </div>
 
-    <% if @student.profile_photo.attached? %>
+    <% if @student.persisted? && @student.profile_photo.attached? %>
 
       <div class="mb-3">
 
@@ -95,7 +95,6 @@
       </div>
 
     <% end %>
-
     <hr>
 
     <h4>Documents</h4>
@@ -111,16 +110,14 @@
 
     </div>
 
-    <% if @student.documents.attached? %>
+    <% if @student.persisted? && @student.documents.attached? %>
 
       <table class="table table-bordered">
 
         <thead>
-
           <tr>
             <th>Document</th>
           </tr>
-
         </thead>
 
         <tbody>
@@ -128,9 +125,7 @@
           <% @student.documents.each do |document| %>
 
             <tr>
-
               <td><%= document.filename %></td>
-
             </tr>
 
           <% end %>

@@ -1,2 +1,18 @@
-StudentMailer.teacher_assigned(@student).deliver_later
-TeacherMailer.new_student(@student).deliver_later
+<h2>Hello <%= @student.name %>,</h2>
+
+<p>Your teacher has been assigned.</p>
+
+<p>
+  <b>Teacher:</b>
+  <%= @teacher.name %>
+</p>
+
+<p>
+  <b>Course:</b>
+  <%= @student.course %>
+</p>
+
+<p>
+Regards,<br>
+ABC Academy
+</p>
