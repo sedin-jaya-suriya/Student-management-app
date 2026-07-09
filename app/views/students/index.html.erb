@@ -1,84 +1,104 @@
 <div class="py-3">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <div>
-            <h1 class="h3 mb-0">Students</h1>
-            <small class="text-muted">Manage student records</small>
-        </div>
-        <div>
-            <%= link_to 'Add Student', new_student_path, class: 'btn btn-primary' %>
-        </div>
+  <%# Page header with student counter and Add button %>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <h1 class="h3 mb-0">Students</h1>
+      <small class="text-muted">
+        Manage student records —
+        Total Students: <span id="student_count"><%= @students.count %></span>
+      </small>
     </div>
+    <div>
+      <button class="btn btn-primary"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#new_student_form"
+              aria-expanded="false"
+              aria-controls="new_student_form">
+        <i class="bi bi-plus-circle me-1"></i> Add Student
+      </button>
+    </div>
+  </div>
+
+  <%# Flash messages container for Turbo Stream updates %>
+  <div id="flash_messages"></div>
+
+  <%# Collapsible inline Add Student form %>
+  <div class="collapse mb-3" id="new_student_form">
+    <div class="card p-3">
+      <h5 class="mb-3"><i class="bi bi-person-plus me-1"></i> New Student</h5>
+      <div id="new_student">
+        <%= render "form", student: Student.new %>
+      </div>
+    </div>
+  </div>
+
+  <%# Search and filter controls %>
+  <%= turbo_frame_tag "students_table" do %>
 
     <div class="card p-3 mb-3">
-        <div class="row g-2 align-items-center">
-            <div class="col-md-6">
-                <%= form_with url: students_path, method: :get, local: true do %>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="bi bi-search"></i></span>
-                        <%= text_field_tag :search, params[:search], placeholder: 'Search by name or email', class: 'form-control' %>
-                        <button class="btn btn-outline-secondary" type="submit">Search</button>
-                    </div>
-                <% end %>
+      <div class="row g-2 align-items-center">
+        <div class="col-md-6">
+          <%= form_with url: students_path, method: :get, data: { turbo_frame: "students_table" } do %>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-search"></i></span>
+              <%= text_field_tag :search, params[:search],
+                    placeholder: 'Search by name or email',
+                    class: 'form-control',
+                    autofocus: params[:search].present? %>
+              <button class="btn btn-outline-secondary" type="submit">Search</button>
+              <% if params[:search].present? %>
+                <%= link_to "Clear", students_path, class: "btn btn-outline-danger",
+                      data: { turbo_frame: "students_table" } %>
+              <% end %>
             </div>
-
-            <div class="col-md-4">
-                <%= form_with url: students_path, method: :get, local: true do %>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="bi bi-filter"></i></span>
-                        <%= select_tag :course, options_for_select(Student::COURSES, params[:course]), include_blank: 'All Courses', class: 'form-select' %>
-                        <button class="btn btn-outline-secondary" type="submit">Filter</button>
-                    </div>
-                <% end %>
-            </div>
+          <% end %>
         </div>
+
+        <div class="col-md-4">
+          <%= form_with url: students_path, method: :get, data: { turbo_frame: "students_table" } do %>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-filter"></i></span>
+              <%= select_tag :course,
+                    options_for_select(Student::COURSES, params[:course]),
+                    include_blank: 'All Courses',
+                    class: 'form-select' %>
+              <button class="btn btn-outline-secondary" type="submit">Filter</button>
+            </div>
+          <% end %>
+        </div>
+      </div>
     </div>
 
+    <%# Student table %>
     <div class="card p-0">
-        <div class="table-responsive">
-            <table class="table table-hover mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Age</th>
-                        <th>Course</th>
-                        <th>City</th>
-                        <th>Marks</th>
-                        <th class="text-end">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                        <% if @students.any? %>
-                            <% @students.each do |student| %>
-                                <tr>
-                                    <td class="align-middle"><%= student.name %></td>
-                                    <td class="align-middle"><%= student.email %></td>
-                                    <td class="align-middle"><%= student.age %></td>
-                                    <td class="align-middle"><span class="badge bg-primary text-white"><%= student.course %></span></td>
-                                    <td class="align-middle"><%= student.city %></td>
-                                    <td class="align-middle"><%= number_with_delimiter(student.marks) %></td>
-                                    <td class="text-end align-middle">
-                                        <%= link_to student_path(student), class: 'btn btn-sm btn-outline-secondary me-1', title: 'View' do %>
-                                            <i class="bi bi-eye"></i>
-                                        <% end %>
-                                        <%= link_to edit_student_path(student), class: 'btn btn-sm btn-outline-secondary me-1', title: 'Edit' do %>
-                                            <i class="bi bi-pencil"></i>
-                                        <% end %>
-                                        <%= button_to student_path(student), method: :delete, data: { turbo_confirm: 'Are you sure?' }, class: 'btn btn-sm btn-danger', title: 'Delete' do %>
-                                            <i class="bi bi-trash"></i>
-                                        <% end %>
-                                    </td>
-                                </tr>
-                            <% end %>
-                        <% else %>
-                        <tr>
-                            <td colspan="7" class="text-center py-4">
-                                <div class="text-muted">No students found. <%= link_to 'Add the first student', new_student_path %></div>
-                            </td>
-                        </tr>
-                    <% end %>
-                </tbody>
-            </table>
-        </div>
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Age</th>
+              <th>Course</th>
+              <th>City</th>
+              <th>Marks</th>
+              <th class="text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="students_tbody">
+            <% if @students.any? %>
+              <%= render partial: "student", collection: @students %>
+            <% else %>
+              <tr id="no_students_row">
+                <td colspan="7" class="text-center py-4">
+                  <div class="text-muted">No students found.</div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
     </div>
+
+  <% end %>
 </div>

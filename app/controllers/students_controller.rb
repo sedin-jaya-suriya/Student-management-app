@@ -8,6 +8,8 @@ class StudentsController < ApplicationController
     :remove_document
   ]
 
+  helper_method :student_scope
+
   def index
     @students = student_scope
     @students = @students.search(params[:search]) if params[:search].present?
@@ -25,7 +27,7 @@ class StudentsController < ApplicationController
   end
 
   def create
-  @student = Student.new(student_params)
+    @student = Student.new(student_params)
 
     if current_user.teacher?
       @student.teacher = current_user
@@ -45,9 +47,21 @@ class StudentsController < ApplicationController
         end
       end
 
-      redirect_to @student, notice: "Student created successfully."
+      respond_to do |format|
+        format.html { redirect_to @student, notice: "Student created successfully." }
+        format.turbo_stream
+      end
     else
-      render :new, status: :unprocessable_entity
+      respond_to do |format|
+        format.html { render :new, status: :unprocessable_entity }
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace(
+            "new_student",
+            partial: "form",
+            locals: { student: @student }
+          )
+        end
+      end
     end
   end
 
@@ -71,15 +85,23 @@ class StudentsController < ApplicationController
         end
       end
 
-      redirect_to @student, notice: "Student updated successfully."
+      respond_to do |format|
+        format.html { redirect_to @student, notice: "Student updated successfully." }
+        format.turbo_stream
+      end
     else
-      render :edit, status: :unprocessable_entity
+      respond_to do |format|
+        format.html { render :edit, status: :unprocessable_entity }
+      end
     end
   end
 
   def destroy
     @student.destroy
-    redirect_to students_path, notice: "Student deleted successfully."
+    respond_to do |format|
+      format.html { redirect_to students_path, notice: "Student deleted successfully." }
+      format.turbo_stream
+    end
   end
 
   def remove_profile_photo

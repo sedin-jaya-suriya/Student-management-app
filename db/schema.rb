@@ -60,7 +60,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_30_090725) do
     t.datetime "remember_created_at"
     t.datetime "reset_password_sent_at"
     t.string "reset_password_token"
-    t.string "role"
+    t.string "role", default: "teacher"
     t.string "subject"
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
