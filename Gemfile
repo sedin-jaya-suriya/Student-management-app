@@ -66,9 +66,12 @@ group :test do
   gem "selenium-webdriver"
 end
 
-gem "fiddle"  
-gem 'devise'
-gem 'jwt'
+gem "fiddle"
+gem "devise"
+gem "jwt"
 gem "prawn"
-gem "dotenv-rails", groups: [:development, :test]
+gem "dotenv-rails", groups: [ :development, :test ]
 
+gem "sidekiq"
+gem "redis"
+gem "rack-session"

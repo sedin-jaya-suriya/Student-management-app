@@ -114,9 +114,19 @@
 
   <div class="text-right">
 
-    <%= link_to "Download Report Card",
-            download_report_student_path(@student),
-            class: "btn btn-success" %>
+    <%= button_to "Generate Report Card",
+            generate_report_student_path(@student),
+            method: :post,
+            class: "btn btn-primary mb-2" %>
+
+    <% if @student.report_card.attached? %>
+      <div class="mb-2">
+        <span class="text-success"><i class="bi bi-file-earmark-pdf"></i> Generated Report</span>
+        <%= link_to "Download Report Card",
+              download_report_student_path(@student),
+              class: "btn btn-success" %>
+      </div>
+    <% end %>
 
     <%= link_to 'Edit',
           edit_student_path(@student),

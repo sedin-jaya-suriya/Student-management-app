@@ -1,6 +1,7 @@
 class Student < ApplicationRecord
   belongs_to :teacher, class_name: "User"
   has_one_attached :profile_photo
+  has_one_attached :report_card
   has_many_attached :documents
 
   validates :teacher, presence: true
@@ -18,7 +19,7 @@ class Student < ApplicationRecord
 
   validate :profile_photo_validation
   validate :document_validation
-  
+
 
   COURSES = %w[Ruby Rails React Java].freeze
 

@@ -21,6 +21,7 @@ Rails.application.routes.draw do
     member do
       delete :remove_profile_photo
       delete :remove_document
+      post :generate_report
       get :download_report
     end
   end
@@ -29,7 +30,7 @@ Rails.application.routes.draw do
     post :login, to: "sessions#create"
 
     resources :teachers do
-      resources :students, only: [:index, :create]
+      resources :students, only: [ :index, :create ]
     end
 
     resources :students

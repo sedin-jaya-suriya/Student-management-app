@@ -1,10 +1,10 @@
 module Api
   class TeachersController < BaseController
-    before_action :set_teacher, only: [:show, :update, :destroy]
+    before_action :set_teacher, only: [ :show, :update, :destroy ]
 
     # GET /teachers
     def index
-      teachers = User.where(role: 'teacher')
+      teachers = User.where(role: "teacher")
       teachers = teachers.where(subject: params[:subject]) if params[:subject].present?
       render json: teachers.select(:id, :name, :subject), status: :ok
     end
@@ -16,7 +16,7 @@ module Api
 
     # POST /teachers
     def create
-      teacher = User.new(teacher_params.merge(role: 'teacher'))
+      teacher = User.new(teacher_params.merge(role: "teacher"))
       if teacher.save
         render json: teacher.slice(:id, :name, :subject), status: :created
       else
@@ -42,9 +42,9 @@ module Api
     private
 
     def set_teacher
-      @teacher = User.where(role: 'teacher').find(params[:id])
+      @teacher = User.where(role: "teacher").find(params[:id])
     rescue ActiveRecord::RecordNotFound
-      render json: { errors: ['Teacher not found'] }, status: :not_found
+      render json: { errors: [ "Teacher not found" ] }, status: :not_found
     end
 
     def teacher_params

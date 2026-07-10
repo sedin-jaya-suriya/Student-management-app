@@ -7,7 +7,7 @@
     <td class="align-middle"><%= student.city %></td>
     <td class="align-middle"><%= number_with_delimiter(student.marks) %></td>
     <td class="text-end align-middle">
-      <%= link_to student_path(student), class: 'btn btn-sm btn-outline-secondary me-1', title: 'View' do %>
+      <%= link_to student_path(student), class: 'btn btn-sm btn-outline-secondary me-1', title: 'View', data: { turbo_frame: "_top" } do %>
         <i class="bi bi-eye"></i>
       <% end %>
       <%= link_to edit_student_path(student), class: 'btn btn-sm btn-outline-secondary me-1', title: 'Edit', data: { turbo_frame: dom_id(student) } do %>

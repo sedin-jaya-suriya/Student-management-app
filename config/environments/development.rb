@@ -96,6 +96,5 @@ Rails.application.configure do
     enable_starttls_auto: true
   }
 
-  config.active_job.queue_adapter = :async
+  config.active_job.queue_adapter = :sidekiq
 end
-

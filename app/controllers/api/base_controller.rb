@@ -7,13 +7,13 @@ module Api
     private
 
     def authorize_request
-      header = request.headers['Authorization']
-      header = header.split(' ').last if header.present?
+      header = request.headers["Authorization"]
+      header = header.split(" ").last if header.present?
       decoded = JsonWebToken.decode(header)
       if decoded && decoded[:user_id]
         @current_user = User.find_by(id: decoded[:user_id])
       end
-      render json: { errors: ['Not Authorized'] }, status: :unauthorized unless @current_user
+      render json: { errors: [ "Not Authorized" ] }, status: :unauthorized unless @current_user
     end
 
     def render_unprocessable(resource)

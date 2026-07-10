@@ -1,12 +1,12 @@
 class DashboardController < ApplicationController
-  before_action :require_admin!, only: [:admin]
-  before_action :require_admin!, only: [:admin, :teachers]
-  before_action :require_teacher!, only: [:teacher]
+  before_action :require_admin!, only: [ :admin ]
+  before_action :require_admin!, only: [ :admin, :teachers ]
+  before_action :require_teacher!, only: [ :teacher ]
 
   def home
     return redirect_to admin_dashboard_path if current_user.admin?
     return redirect_to teacher_dashboard_path if current_user.teacher?
-    redirect_to root_path,alert: "Unauthorized access."
+    redirect_to root_path, alert: "Unauthorized access."
   end
 
   def admin
@@ -28,4 +28,4 @@ class DashboardController < ApplicationController
     @total_students = students.count
     @course_counts = students.group(:course).count
   end
-end 
+end

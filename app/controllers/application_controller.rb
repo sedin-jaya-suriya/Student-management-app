@@ -10,7 +10,7 @@ class ApplicationController < ActionController::Base
 
   private
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up, keys: [:role])
+    devise_parameter_sanitizer.permit(:sign_up, keys: [ :role ])
   end
 
   def after_sign_in_path_for(resource)
@@ -20,14 +20,14 @@ class ApplicationController < ActionController::Base
   end
 
   def require_admin!
-    redirect_to root_path,alert: "Access denied." unless current_user.admin?
+    redirect_to root_path, alert: "Access denied." unless current_user.admin?
   end
 
   def require_teacher!
-    redirect_to root_path,alert: "Access denied." unless current_user.teacher?
+    redirect_to root_path, alert: "Access denied." unless current_user.teacher?
   end
 
   def record_not_found
-    redirect_to students_path,alert: "Student not found or access denied."
+    redirect_to students_path, alert: "Student not found or access denied."
   end
 end

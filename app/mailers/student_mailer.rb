@@ -50,14 +50,12 @@ class StudentMailer < ApplicationMailer
     )
     end
 
-    def report_card(student, pdf_data)
+    def report_card(student)
     @student = student
-
-    attachments["ReportCard.pdf"] = pdf_data
 
     mail(
         to: @student.email,
-        subject: "Your Report Card"
+        subject: "Your Report Card is Ready"
     )
     end
 end

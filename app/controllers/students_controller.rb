@@ -5,7 +5,9 @@ class StudentsController < ApplicationController
     :update,
     :destroy,
     :remove_profile_photo,
-    :remove_document
+    :remove_document,
+    :generate_report,
+    :download_report
   ]
 
   helper_method :student_scope
@@ -116,29 +118,19 @@ class StudentsController < ApplicationController
     redirect_to @student, notice: "Document deleted successfully."
   end
 
+  def generate_report
+    ReportCardGenerationJob.perform_later(@student.id)
+    redirect_to @student, notice: "Report generation has been queued successfully."
+  end
+
   def download_report
-    @student = Student.find(params[:id])
-
-    pdf = Prawn::Document.new
-
-    pdf.text "ABC Academy"
-    pdf.move_down 10
-
-    pdf.text "Report Card"
-    pdf.move_down 10
-
-    pdf.text "Name: #{@student.name}"
-    pdf.text "Course: #{@student.course}"
-    pdf.text "Marks: #{@student.marks}"
-    pdf.text "Result: #{@student.result}"
-
-    pdf_data = pdf.render
-
-    StudentMailer.report_card(@student, pdf_data).deliver_now
-
-    send_data pdf_data,
-              filename: "ReportCard.pdf",
-              type: "application/pdf"
+    if @student.report_card.attached?
+      send_data @student.report_card.download,
+                filename: "ReportCard_#{@student.id}.pdf",
+                type: "application/pdf"
+    else
+      redirect_to @student, alert: "Report card not found."
+    end
   end
 
   private
