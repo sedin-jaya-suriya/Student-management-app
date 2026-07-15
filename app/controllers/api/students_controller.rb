@@ -66,8 +66,8 @@ module Api
     end
 
     def student_params
-      params.require(:student).permit(:name, :email, :age, :course, :city, :marks, :teacher_id
-      , :profile_photo, documents:[])
+      params.require(:student).permit(:name, :email, :age, :course, :city, :marks, :teacher_id,
+      :profile_photo, documents:[])
     end
   end
 end
