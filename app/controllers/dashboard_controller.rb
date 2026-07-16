@@ -1,8 +1,13 @@
 class DashboardController < ApplicationController
-  before_action :require_admin!, only: [:admin]
-  before_action :require_admin!, only: [:admin, :teachers]
-  before_action :require_teacher!, only: [:teacher]
+  before_action :require_admin!, only: %i[admin teachers]
+  before_action :require_teacher!, only: %i[teacher]
 
+  # Public landing page for the app
+  def index
+    return redirect_to admin_dashboard_path if user_signed_in? && current_user.admin?
+    return redirect_to teacher_dashboard_path if user_signed_in? && current_user.teacher?
+  end
+  
   def home
     return redirect_to admin_dashboard_path if current_user.admin?
     return redirect_to teacher_dashboard_path if current_user.teacher?

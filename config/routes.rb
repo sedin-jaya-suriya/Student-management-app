@@ -1,38 +1,34 @@
 Rails.application.routes.draw do
+  # Standard web routes for Devise (keeps /users/sign_in available)
   devise_for :users
-  get "admin_dashboard",
-    to: "dashboard#admin"
 
-  get "admin/teachers",
-    to: "dashboard#teachers",
-    as: :admin_teachers
-
-  get "teacher_dashboard",
-    to: "dashboard#teacher"
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-
-  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-  # Can be used by load balancers and uptime monitors to verify that the app is live.
-  get "up" => "rails/health#show", as: :rails_health_check
+  # Web UI resources
   resources :students
-  root "dashboard#home"
-  
-  # API routes (JSON)
-  resources :students
-  
+
+  # Root route for the web UI
+  root "dashboard#index"
+
+  # Dashboard pages (web UI)
+  get 'dashboard/admin', to: 'dashboard#admin', as: 'admin_dashboard'
+  get 'dashboard/teacher', to: 'dashboard#teacher', as: 'teacher_dashboard'
+  get 'dashboard/teachers', to: 'dashboard#teachers', as: 'teachers_dashboard'
+  get 'dashboard/home', to: 'dashboard#home', as: 'home_dashboard'
+  # Backwards-compatible admin teachers path used by navigation
+  get 'admin/teachers', to: 'dashboard#teachers', as: 'admin_teachers'
+
+  # API login/logout mapped to Api::SessionsController
+  devise_scope :user do
+    post 'api/login', to: 'api/sessions#create', defaults: { format: :json }
+    delete 'api/logout', to: 'api/sessions#destroy', defaults: { format: :json }
+  end
+
   namespace :api, defaults: { format: :json } do
-    post :login, to: "sessions#create"
+    resources :students
 
     resources :teachers do
-      resources :students, only: [:index, :create]
+      resources :students,
+                controller: 'teacher_students',
+                only: [:index, :create]
     end
-
-    resources :students
   end
-  # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
-  # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
-  # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
-
-  # Defines the root path route ("/")
-  # root "posts#index"
 end
