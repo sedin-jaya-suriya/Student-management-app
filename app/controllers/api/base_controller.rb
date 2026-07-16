@@ -9,10 +9,6 @@ module Api
       render json: { errors: [e.message] }, status: :not_found
     end
 
-    rescue_from StandardError do |e|
-      render json: { error: e.message }, status: :internal_server_error
-    end
-
     respond_to :json
 
     private
