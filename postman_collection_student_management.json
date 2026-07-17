@@ -1,0 +1,562 @@
+{
+  "info": {
+    "name": "Student Management API",
+    "_postman_id": "student-management-api-v2",
+    "description": "Complete API collection for Student Management Application.\n\n## How to Use\n1. Run the **Login** request first.\n2. The JWT token is automatically saved to the `jwt_token` collection variable.\n3. All other requests use `{{jwt_token}}` for Bearer auth automatically.\n4. Use `{{base_url}}` variable (default: http://localhost:3000) to switch environments.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:3000", "type": "string" },
+    { "key": "jwt_token", "value": "", "type": "string" },
+    { "key": "teacher_id", "value": "2", "type": "string" },
+    { "key": "student_id", "value": "1", "type": "string" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{jwt_token}}", "type": "string" }]
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login (POST /api/login)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var body = pm.response.json();",
+                  "    pm.collectionVariables.set('jwt_token', body.token);",
+                  "    pm.test('Login successful and token saved', function() {",
+                  "        pm.expect(body.token).to.be.a('string').and.not.empty;",
+                  "    });",
+                  "} else {",
+                  "    pm.test('Login failed', function() {",
+                  "        pm.response.to.have.status(200);",
+                  "    });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user\": {\n    \"email\": \"teacher@gmail.com\",\n    \"password\": \"password\"\n  }\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/login", "host": ["{{base_url}}"], "path": ["api", "login"] }
+          }
+        },
+        {
+          "name": "Logout (DELETE /api/logout)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Logout successful', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.collectionVariables.set('jwt_token', '');"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/logout", "host": ["{{base_url}}"], "path": ["api", "logout"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Teacher APIs",
+      "item": [
+        {
+          "name": "GET /api/teachers",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', function() { pm.response.to.have.status(200); });",
+                  "pm.test('Response is an array', function() { pm.expect(pm.response.json()).to.be.an('array'); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/teachers", "host": ["{{base_url}}"], "path": ["api", "teachers"] }
+          }
+        },
+        {
+          "name": "GET /api/teachers/:id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 or 404', function() { pm.expect([200, 404]).to.include(pm.response.code); });",
+                  "if (pm.response.code === 200) {",
+                  "  pm.test('Has students array', function() { pm.expect(pm.response.json()).to.have.property('students'); });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/teachers/{{teacher_id}}", "host": ["{{base_url}}"], "path": ["api", "teachers", "{{teacher_id}}"] }
+          }
+        },
+        {
+          "name": "POST /api/teachers (Create Teacher)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201 Created', function() { pm.response.to.have.status(201); });",
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('teacher_id', pm.response.json().id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Smith\",\n  \"email\": \"john.smith@example.com\",\n  \"password\": \"password123\",\n  \"subject\": \"Mathematics\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/teachers", "host": ["{{base_url}}"], "path": ["api", "teachers"] }
+          }
+        },
+        {
+          "name": "PUT /api/teachers/:id (Update Teacher)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 OK', function() { pm.response.to.have.status(200); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"subject\": \"Physics\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/teachers/{{teacher_id}}", "host": ["{{base_url}}"], "path": ["api", "teachers", "{{teacher_id}}"] }
+          }
+        },
+        {
+          "name": "DELETE /api/teachers/:id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 204 No Content', function() { pm.response.to.have.status(204); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/teachers/{{teacher_id}}", "host": ["{{base_url}}"], "path": ["api", "teachers", "{{teacher_id}}"] }
+          }
+        },
+        {
+          "name": "GET /api/teachers?subject=Math (Filter by Subject)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', function() { pm.response.to.have.status(200); });",
+                  "pm.test('Response is array', function() { pm.expect(pm.response.json()).to.be.an('array'); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/teachers?subject=Math",
+              "host": ["{{base_url}}"],
+              "path": ["api", "teachers"],
+              "query": [{ "key": "subject", "value": "Math" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Student APIs",
+      "item": [
+        {
+          "name": "GET /api/students",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', function() { pm.response.to.have.status(200); });",
+                  "pm.test('Response is array', function() { pm.expect(pm.response.json()).to.be.an('array'); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/students", "host": ["{{base_url}}"], "path": ["api", "students"] }
+          }
+        },
+        {
+          "name": "GET /api/students/:id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 or 404', function() { pm.expect([200, 404]).to.include(pm.response.code); });",
+                  "if (pm.response.code === 200) {",
+                  "  pm.test('Has grade field', function() { pm.expect(pm.response.json()).to.have.property('grade'); });",
+                  "  pm.test('Has result field', function() { pm.expect(pm.response.json()).to.have.property('result'); });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/students/{{student_id}}", "host": ["{{base_url}}"], "path": ["api", "students", "{{student_id}}"] }
+          }
+        },
+        {
+          "name": "POST /api/students (Create Student)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201 Created', function() { pm.response.to.have.status(201); });",
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('student_id', pm.response.json().id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Alice Johnson\",\n  \"email\": \"alice.johnson@example.com\",\n  \"age\": 16,\n  \"course\": \"Ruby\",\n  \"city\": \"Chennai\",\n  \"marks\": 85,\n  \"teacher_id\": {{teacher_id}}\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/students", "host": ["{{base_url}}"], "path": ["api", "students"] }
+          }
+        },
+        {
+          "name": "PUT /api/students/:id (Update Student)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 OK', function() { pm.response.to.have.status(200); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"marks\": 90\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/students/{{student_id}}", "host": ["{{base_url}}"], "path": ["api", "students", "{{student_id}}"] }
+          }
+        },
+        {
+          "name": "DELETE /api/students/:id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 204 No Content', function() { pm.response.to.have.status(204); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/students/{{student_id}}", "host": ["{{base_url}}"], "path": ["api", "students", "{{student_id}}"] }
+          }
+        },
+        {
+          "name": "GET /api/students?name=alice (Filter by Name)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/students?name=alice",
+              "host": ["{{base_url}}"],
+              "path": ["api", "students"],
+              "query": [{ "key": "name", "value": "alice" }]
+            }
+          }
+        },
+        {
+          "name": "GET /api/students?grade=A (Filter by Grade)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', function() { pm.response.to.have.status(200); });",
+                  "pm.test('All students have grade A', function() {",
+                  "  pm.response.json().forEach(function(s) {",
+                  "    pm.expect(s.grade).to.equal('A');",
+                  "  });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/students?grade=A",
+              "host": ["{{base_url}}"],
+              "path": ["api", "students"],
+              "query": [{ "key": "grade", "value": "A" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Association APIs",
+      "item": [
+        {
+          "name": "GET /api/teachers/:teacher_id/students",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', function() { pm.response.to.have.status(200); });",
+                  "pm.test('Response is array', function() { pm.expect(pm.response.json()).to.be.an('array'); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/teachers/{{teacher_id}}/students", "host": ["{{base_url}}"], "path": ["api", "teachers", "{{teacher_id}}", "students"] }
+          }
+        },
+        {
+          "name": "POST /api/teachers/:teacher_id/students (Create Student under Teacher)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201 Created', function() { pm.response.to.have.status(201); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Bob Martin\",\n  \"email\": \"bob.martin@example.com\",\n  \"age\": 15,\n  \"course\": \"Rails\",\n  \"city\": \"Bangalore\",\n  \"marks\": 78\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/teachers/{{teacher_id}}/students", "host": ["{{base_url}}"], "path": ["api", "teachers", "{{teacher_id}}", "students"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Negative Scenarios",
+      "item": [
+        {
+          "name": "GET /api/teachers/9999 (Invalid ID - 404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 404 Not Found', function() { pm.response.to.have.status(404); });",
+                  "pm.test('Has errors key', function() { pm.expect(pm.response.json()).to.have.property('errors'); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/teachers/9999", "host": ["{{base_url}}"], "path": ["api", "teachers", "9999"] }
+          }
+        },
+        {
+          "name": "GET /api/students/9999 (Invalid ID - 404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 404 Not Found', function() { pm.response.to.have.status(404); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/students/9999", "host": ["{{base_url}}"], "path": ["api", "students", "9999"] }
+          }
+        },
+        {
+          "name": "POST /api/students (Missing fields - 422)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 422 Unprocessable Entity', function() { pm.response.to.have.status(422); });",
+                  "pm.test('Has errors key', function() { pm.expect(pm.response.json()).to.have.property('errors'); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"incomplete@example.com\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/students", "host": ["{{base_url}}"], "path": ["api", "students"] }
+          }
+        },
+        {
+          "name": "POST /api/teachers (Missing email - 422)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 422 Unprocessable Entity', function() { pm.response.to.have.status(422); });",
+                  "pm.test('Has errors key', function() { pm.expect(pm.response.json()).to.have.property('errors'); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"No Email Teacher\",\n  \"subject\": \"Science\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/teachers", "host": ["{{base_url}}"], "path": ["api", "teachers"] }
+          }
+        },
+        {
+          "name": "API Without Token (401 Unauthorized)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 401 Unauthorized', function() { pm.response.to.have.status(401); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/students", "host": ["{{base_url}}"], "path": ["api", "students"] }
+          }
+        },
+        {
+          "name": "POST /api/students (Invalid teacher_id - 422)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 422 Unprocessable Entity', function() { pm.response.to.have.status(422); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Student X\",\n  \"email\": \"studentx@example.com\",\n  \"age\": 18,\n  \"course\": \"Ruby\",\n  \"city\": \"Chennai\",\n  \"marks\": 75,\n  \"teacher_id\": 99999\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/students", "host": ["{{base_url}}"], "path": ["api", "students"] }
+          }
+        }
+      ]
+    }
+  ]
+}

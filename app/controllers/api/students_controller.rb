@@ -71,3 +71,80 @@ module Api
     end
   end
 end
+
+module Api
+  class StudentsController < Api::BaseController
+    before_action :set_student, only: %i[show update destroy]
+
+    # GET /api/students
+    def index
+      students = Student.all
+      students = students.search(params[:name]) if params[:name].present?
+      students = students.by_course(params[:course]) if params[:course].present?
+      students = students.by_grade(params[:grade]) if params[:grade].present?
+
+      render json: students, status: :ok
+    end
+
+    # GET /api/students/:id
+    def show
+      render json: @student, status: :ok
+    end
+
+    # POST /api/students
+    def create
+      student = Student.new(student_params)
+      student.teacher_id = current_user.id unless current_user.admin?
+
+      if student.save
+        render json: student, status: :created
+      else
+        render json: { errors: student.errors.full_messages }, status: :unprocessable_entity
+      end
+    end
+
+    # PUT/PATCH /api/students/:id
+    def update
+      if @student.update(student_params)
+        render json: @student, status: :ok
+      else
+        render json: { errors: @student.errors.full_messages }, status: :unprocessable_entity
+      end
+    end
+
+    # DELETE /api/students/:id
+    def destroy
+      @student.destroy
+      head :no_content
+    end
+
+    private
+
+    def set_student
+      @student = Student.find_by(id: params[:id])
+
+      unless @student
+        render json: { errors: ['Student not found'] }, status: :not_found
+      end
+    end
+
+    def student_params
+      permitted = [
+        :name,
+        :email,
+        :age,
+        :course,
+        :city,
+        :marks
+      ]
+
+      permitted << :teacher_id if current_user.admin?
+
+      if params.key?(:student)
+        params.require(:student).permit(permitted)
+      else
+        params.permit(permitted)
+      end
+    end
+  end
+end

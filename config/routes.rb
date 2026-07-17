@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  # Standard web routes for Devise (keeps /users/sign_in available)
   devise_for :users
 
   get "admin_dashboard",
@@ -27,12 +28,12 @@ Rails.application.routes.draw do
   end
 
   namespace :api, defaults: { format: :json } do
-    post :login, to: "sessions#create"
+    resources :students
 
     resources :teachers do
-      resources :students, only: [ :index, :create ]
+      resources :students,
+                controller: 'teacher_students',
+                only: [:index, :create]
     end
-
-    resources :students
   end
 end

@@ -75,6 +75,9 @@ gem "devise"
 gem "jwt"
 gem "prawn"
 gem "dotenv-rails", groups: [ :development, :test ]
+gem 'devise-jwt'
+gem 'rack-cors'
+
 
 gem "sidekiq"
 gem "redis"

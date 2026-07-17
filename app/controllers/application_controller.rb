@@ -14,17 +14,21 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(resource)
-    return admin_dashboard_path if resource.admin?
-    return teacher_dashboard_path if resource.teacher?
+    # Respect any stored location (user was trying to access a protected page)
+    stored = stored_location_for(resource)
+    return stored if stored.present?
+
+    return admin_dashboard_path if resource.respond_to?(:admin?) && resource.admin?
+    return teacher_dashboard_path if resource.respond_to?(:teacher?) && resource.teacher?
     root_path
   end
 
   def require_admin!
-    redirect_to root_path, alert: "Access denied." unless current_user.admin?
+    redirect_to root_path, alert: "Access denied." unless current_user&.admin?
   end
 
   def require_teacher!
-    redirect_to root_path, alert: "Access denied." unless current_user.teacher?
+    redirect_to root_path, alert: "Access denied." unless current_user&.teacher?
   end
 
   def record_not_found
