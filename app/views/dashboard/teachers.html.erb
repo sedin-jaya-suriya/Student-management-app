@@ -1,0 +1,29 @@
+<div class="py-3">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <h1 class="h3 mb-0">Teachers</h1>
+      <small class="text-muted">List of teachers and their student counts</small>
+    </div>
+  </div>
+
+  <div class="card p-3">
+    <% if @teachers.any? %>
+      <div class="list-group list-group-flush">
+        <% @teachers.each do |teacher| %>
+          <div class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+              <div class="fw-bold"><%= teacher.email %></div>
+              <div class="muted small">Role: <%= teacher.role || 'teacher' %></div>
+            </div>
+            <div class="text-end">
+              <div class="small text-muted">Students</div>
+              <div class="fw-bold"><%= number_with_delimiter(teacher.students_count) %></div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="text-muted">No teachers found.</div>
+    <% end %>
+  </div>
+</div>

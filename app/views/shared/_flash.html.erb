@@ -1,0 +1,31 @@
+<%# Bootstrap toasts for flash messages %>
+<div aria-live="polite" aria-atomic="true" class="position-relative">
+  <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index:1080">
+    <% flash.each do |type, message| %>
+      <% bs_class = case type.to_s
+         when 'notice' then 'bg-success text-white'
+         when 'alert' then 'bg-danger text-white'
+         else 'bg-secondary text-white'
+      end %>
+
+      <div class="toast <%= bs_class %>" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="4000">
+        <div class="d-flex">
+          <div class="toast-body">
+            <%= message %>
+          </div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function(){
+    var toastElList = [].slice.call(document.querySelectorAll('.toast'));
+    toastElList.forEach(function(toastEl){
+      var toast = new bootstrap.Toast(toastEl);
+      toast.show();
+    });
+  });
+</script>

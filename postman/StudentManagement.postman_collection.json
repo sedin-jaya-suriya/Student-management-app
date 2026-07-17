@@ -1,0 +1,114 @@
+{
+  "info": {
+    "name": "Student Management API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Login (get JWT)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"teacher@example.com\",\n  \"password\": \"password123\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "login"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Create Teacher",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"teacher\": {\n    \"name\": \"John\",\n    \"email\": \"john@example.com\",\n    \"password\": \"password123\",\n    \"subject\": \"Mathematics\"\n  }\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/teachers",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "teachers"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Teachers",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/teachers",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "teachers"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Create Student under Teacher",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"student\": {\n    \"name\": \"Alice\",\n    \"email\": \"alice@example.com\",\n    \"age\": 14,\n    \"course\": \"Ruby\",\n    \"city\": \"Townsville\",\n    \"marks\": 85\n  }\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/teachers/{{teacher_id}}/students",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "teachers",
+            "{{teacher_id}}",
+            "students"
+          ]
+        }
+      }
+    }
+  ]
+}
