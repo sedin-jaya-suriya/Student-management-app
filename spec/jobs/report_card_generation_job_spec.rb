@@ -7,6 +7,9 @@ RSpec.describe ReportCardGenerationJob, type: :job do
 
   describe "#perform" do
     it "calls ReportCardGenerator and sends an email" do
+      allow(Student).to receive(:find).with(student.id).and_return(student)
+      allow(student.report_card).to receive(:attached?).and_return(true)
+
       expect(ReportCardGenerator).to receive(:call).with(satisfy { |s| s.id == student.id })
 
       mailer_double = double("StudentMailer")
@@ -16,9 +19,11 @@ RSpec.describe ReportCardGenerationJob, type: :job do
       ReportCardGenerationJob.new.perform(student.id)
     end
 
-    it "does nothing if student is not found" do
+    it "raises exception if student is not found" do
       expect(ReportCardGenerator).not_to receive(:call)
-      ReportCardGenerationJob.new.perform(9999)
+      expect {
+        ReportCardGenerationJob.new.perform(9999)
+      }.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
 

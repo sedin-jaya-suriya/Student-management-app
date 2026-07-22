@@ -6,7 +6,7 @@ RSpec.describe "Api::Teachers", type: :request do
   let!(:student) { create(:student, teacher: teacher, name: "Alice") }
 
   let(:valid_headers) do
-    token = JsonWebToken.encode(user_id: admin.id)
+    token = JsonWebToken.encode(sub: admin.id.to_s)
     { "Authorization" => "Bearer #{token}" }
   end
 

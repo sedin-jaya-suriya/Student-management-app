@@ -10,7 +10,7 @@ RSpec.describe StudentMailer, type: :mailer do
     it "renders the headers" do
       expect(mail.subject).to eq("Welcome to ABC Academy")
       expect(mail.to).to eq([ student.email ])
-      expect(mail.from).to eq([ "jayasuriya1017@gmail.com" ])
+      expect(mail.from).to eq([ "no-reply@abcacademy.example" ])
     end
   end
 
@@ -20,7 +20,7 @@ RSpec.describe StudentMailer, type: :mailer do
     it "renders the headers" do
       expect(mail.subject).to eq("Teacher Assigned")
       expect(mail.to).to eq([ student.email ])
-      expect(mail.from).to eq([ "jayasuriya1017@gmail.com" ])
+      expect(mail.from).to eq([ "no-reply@abcacademy.example" ])
     end
   end
 
@@ -31,7 +31,7 @@ RSpec.describe StudentMailer, type: :mailer do
     it "renders the headers" do
       expect(mail.subject).to eq("Assignment Submitted Successfully")
       expect(mail.to).to eq([ student.email ])
-      expect(mail.from).to eq([ "jayasuriya1017@gmail.com" ])
+      expect(mail.from).to eq([ "no-reply@abcacademy.example" ])
     end
   end
 
@@ -41,7 +41,7 @@ RSpec.describe StudentMailer, type: :mailer do
     it "renders the headers" do
       expect(mail.subject).to eq("Marks Published")
       expect(mail.to).to eq([ student.email ])
-      expect(mail.from).to eq([ "jayasuriya1017@gmail.com" ])
+      expect(mail.from).to eq([ "no-reply@abcacademy.example" ])
     end
   end
 
@@ -51,7 +51,7 @@ RSpec.describe StudentMailer, type: :mailer do
     it "renders the headers" do
       expect(mail.subject).to eq("Your Report Card is Ready")
       expect(mail.to).to eq([ student.email ])
-      expect(mail.from).to eq([ "jayasuriya1017@gmail.com" ])
+      expect(mail.from).to eq([ "no-reply@abcacademy.example" ])
     end
   end
 end

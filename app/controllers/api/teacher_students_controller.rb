@@ -22,8 +22,8 @@ module Api
     private
 
     def set_teacher
-      @teacher = User.find_by(id: params[:teacher_id], role: 'teacher')
-      render json: { errors: ['Teacher not found'] }, status: :not_found unless @teacher
+      @teacher = User.find_by(id: params[:teacher_id], role: "teacher")
+      render json: { errors: [ "Teacher not found" ] }, status: :not_found unless @teacher
     end
 
     def permitted_student_params

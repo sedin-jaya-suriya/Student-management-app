@@ -6,7 +6,7 @@ RSpec.describe "Api::Students", type: :request do
   let!(:student) { create(:student, teacher: teacher, name: "Alice", course: "Ruby", marks: 95) }
 
   let(:valid_headers) do
-    token = JsonWebToken.encode(user_id: teacher.id)
+    token = JsonWebToken.encode(sub: teacher.id.to_s)
     { "Authorization" => "Bearer #{token}" }
   end
 
@@ -67,7 +67,7 @@ RSpec.describe "Api::Students", type: :request do
 
     it "returns unprocessable entity with invalid params" do
       post api_students_path, params: { student: { name: "" } }, headers: valid_headers
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
   end
 

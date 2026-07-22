@@ -28,11 +28,11 @@ class Student < ApplicationRecord
   PASS_MARK = 35
 
   GRADE_RANGES = {
-    "A" => 85..100,
-    "B" => 70..84,
-    "C" => 50..69,
-    "D" => 35..49,
-    "F" => 0..34
+    "A" => 90..100,
+    "B" => 80..89,
+    "C" => 70..79,
+    "D" => 60..69,
+    "F" => 0..59
   }.freeze
 
   scope :search, ->(term) {

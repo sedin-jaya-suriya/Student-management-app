@@ -1,9 +1,11 @@
-<%# Remove the "no students" placeholder row if it exists %>
-<%= turbo_stream.remove "no_students_row" %>
+<% if student_scope.search(params[:search]).by_course(params[:course]).exists?(@student.id) %>
+  <%# Remove the "no students" placeholder row if it exists %>
+  <%= turbo_stream.remove "no_students_row" %>
 
-<%# Append the new student row to the table %>
-<%= turbo_stream.append "students_tbody" do %>
-  <%= render partial: "student", locals: { student: @student } %>
+  <%# Append the new student row to the table %>
+  <%= turbo_stream.append "students_tbody" do %>
+    <%= render partial: "student", locals: { student: @student } %>
+  <% end %>
 <% end %>
 
 <%# Update the student counter %>

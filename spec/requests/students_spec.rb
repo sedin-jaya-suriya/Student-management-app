@@ -84,7 +84,7 @@ RSpec.describe "Students", type: :request do
 
       it "returns an unprocessable entity status" do
         post students_path, params: invalid_params
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
   end
@@ -109,7 +109,7 @@ RSpec.describe "Students", type: :request do
     context "with invalid parameters" do
       it "returns an unprocessable entity status" do
         patch student_path(student), params: { student: { name: "" } }
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
   end

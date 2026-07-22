@@ -26,6 +26,10 @@ class StudentsController < ApplicationController
   end
 
   def edit
+    respond_to do |format|
+      format.html
+      format.turbo_stream
+    end
   end
 
   def create
@@ -36,18 +40,7 @@ class StudentsController < ApplicationController
     end
 
     if @student.save
-      StudentMailer.welcome_email(@student).deliver_now
-      StudentMailer.teacher_assigned(@student).deliver_now
-
-      if @student.teacher.present?
-        TeacherMailer.new_student(@student).deliver_now
-      end
-
-      if @student.documents.attached?
-        @student.documents.each do |document|
-          StudentMailer.assignment_submitted(@student, document).deliver_now
-        end
-      end
+      StudentNotificationService.notify_creation(@student, params)
 
       respond_to do |format|
         format.html { redirect_to @student, notice: "Student created successfully." }
@@ -61,7 +54,7 @@ class StudentsController < ApplicationController
             "new_student",
             partial: "form",
             locals: { student: @student }
-          )
+          ), status: :unprocessable_entity
         end
       end
     end
@@ -72,20 +65,7 @@ class StudentsController < ApplicationController
     old_teacher = @student.teacher_id
 
     if @student.update(student_params)
-      if old_marks != @student.marks
-        StudentMailer.marks_published(@student).deliver_now
-      end
-
-      if old_teacher != @student.teacher_id
-        StudentMailer.teacher_assigned(@student).deliver_now
-        TeacherMailer.new_student(@student).deliver_now
-      end
-
-      if params.dig(:student, :documents).present?
-        @student.documents.last(params[:student][:documents].count).each do |document|
-          StudentMailer.assignment_submitted(@student, document).deliver_now
-        end
-      end
+      StudentNotificationService.notify_update(@student, old_marks, old_teacher, params)
 
       respond_to do |format|
         format.html { redirect_to @student, notice: "Student updated successfully." }
@@ -94,6 +74,7 @@ class StudentsController < ApplicationController
     else
       respond_to do |format|
         format.html { render :edit, status: :unprocessable_entity }
+        format.turbo_stream { render :edit, status: :unprocessable_entity }
       end
     end
   end
@@ -160,7 +141,8 @@ class StudentsController < ApplicationController
       :marks,
       :teacher_id,
       :profile_photo,
-      documents: []
+      documents: [],
+      assignments: []
     )
   end
 end

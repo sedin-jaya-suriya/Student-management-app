@@ -1,5 +1,5 @@
 class StudentMailer < ApplicationMailer
-  default from: "jayasuriya1017@gmail.com"
+  default from: ENV.fetch("MAILER_FROM", "no-reply@abcacademy.example")
 
   def welcome_email(student)
     @student = student
@@ -17,7 +17,7 @@ class StudentMailer < ApplicationMailer
 
     mail(
         to: @student.email,
-        subject: "Your Teacher Has Been Assigned"
+        subject: "Teacher Assigned"
     )
     end
 
@@ -40,15 +40,6 @@ class StudentMailer < ApplicationMailer
     )
   end
 
-  def teacher_assigned(student)
-    @student = student
-    @teacher = student.teacher
-
-    mail(
-        to: @student.email,
-        subject: "Teacher Assigned"
-    )
-    end
 
     def report_card(student)
     @student = student

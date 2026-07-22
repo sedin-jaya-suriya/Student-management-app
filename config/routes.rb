@@ -31,12 +31,16 @@ Rails.application.routes.draw do
   end
 
   namespace :api, defaults: { format: :json } do
+    devise_scope :user do
+      post :login, to: "sessions#create", as: :login
+    end
+
     resources :students
 
     resources :teachers do
       resources :students,
-                controller: 'teacher_students',
-                only: [:index, :create]
+                controller: "teacher_students",
+                only: [ :index, :create ]
     end
   end
 end
