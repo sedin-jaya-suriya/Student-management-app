@@ -1,6 +1,6 @@
 module Api
   class StudentsController < BaseController
-    before_action :set_student, only: [:show, :update, :destroy]
+    before_action :set_student, only: [ :show, :update, :destroy ]
     #  skip_before_action :verify_authenticity_token
 
     # GET /students
@@ -22,8 +22,8 @@ module Api
         @student = Student.new(student_params)
 
         if params[:teacher_id]
-            teacher = User.find_by(id: params[:teacher_id], role: 'teacher')
-            return render json: { errors: ['Teacher not found'] }, status: :not_found unless teacher
+            teacher = User.find_by(id: params[:teacher_id], role: "teacher")
+            return render json: { errors: [ "Teacher not found" ] }, status: :not_found unless teacher
             @student.teacher = teacher
         elsif current_user.teacher?
             @student.teacher = current_user
@@ -62,12 +62,12 @@ module Api
     def set_student
       @student = student_scope.find(params[:id])
     rescue ActiveRecord::RecordNotFound
-      render json: { errors: ['Student not found'] }, status: :not_found
+      render json: { errors: [ "Student not found" ] }, status: :not_found
     end
 
     def student_params
       params.require(:student).permit(:name, :email, :age, :course, :city, :marks, :teacher_id,
-      :profile_photo, documents:[])
+      :profile_photo, documents: [])
     end
   end
 end

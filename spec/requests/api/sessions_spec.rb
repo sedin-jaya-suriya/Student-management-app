@@ -8,7 +8,7 @@ RSpec.describe "Api::Sessions", type: :request do
       it "returns a JWT token" do
         post api_login_path, params: { email: user.email, password: "password123" }
         expect(response).to have_http_status(:created)
-        
+
         json_response = JSON.parse(response.body)
         expect(json_response).to have_key("token")
       end
@@ -18,7 +18,7 @@ RSpec.describe "Api::Sessions", type: :request do
       it "returns unauthorized status" do
         post api_login_path, params: { email: user.email, password: "wrong_password" }
         expect(response).to have_http_status(:unauthorized)
-        
+
         json_response = JSON.parse(response.body)
         expect(json_response["errors"]).to include("Invalid email or password")
       end

@@ -6,7 +6,7 @@ FactoryBot.define do
     course { "Ruby" }
     city { "New York" }
     marks { 85 }
-    association :teacher, factory: [:user, :teacher]
+    association :teacher, factory: [ :user, :teacher ]
 
     trait :with_photo do
       after(:build) do |student|

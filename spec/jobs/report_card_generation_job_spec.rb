@@ -2,17 +2,17 @@ require 'rails_helper'
 
 RSpec.describe ReportCardGenerationJob, type: :job do
   include ActiveJob::TestHelper
-  
+
   let!(:student) { create(:student) }
 
   describe "#perform" do
     it "calls ReportCardGenerator and sends an email" do
       expect(ReportCardGenerator).to receive(:call).with(satisfy { |s| s.id == student.id })
-      
+
       mailer_double = double("StudentMailer")
       expect(StudentMailer).to receive(:report_card).with(satisfy { |s| s.id == student.id }).and_return(mailer_double)
       expect(mailer_double).to receive(:deliver_now)
-      
+
       ReportCardGenerationJob.new.perform(student.id)
     end
 

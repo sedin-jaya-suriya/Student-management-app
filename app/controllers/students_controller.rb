@@ -123,6 +123,13 @@ class StudentsController < ApplicationController
     redirect_to @student, notice: "Report generation has been queued successfully."
   end
 
+  def generate_all_reports
+    student_scope.find_each do |student|
+      ReportCardGenerationJob.perform_later(student.id)
+    end
+    redirect_to students_path, notice: "Report generation for all students has been queued successfully."
+  end
+
   def download_report
     if @student.report_card.attached?
       send_data @student.report_card.download,

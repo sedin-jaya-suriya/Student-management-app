@@ -9,8 +9,8 @@ RSpec.describe TeacherMailer, type: :mailer do
 
     it "renders the headers" do
       expect(mail.subject).to eq("New Student Assigned")
-      expect(mail.to).to eq([teacher.email])
-      expect(mail.from).to eq(["jayasuriya1017@gmail.com"])
+      expect(mail.to).to eq([ teacher.email ])
+      expect(mail.from).to eq([ "jayasuriya1017@gmail.com" ])
     end
   end
 end

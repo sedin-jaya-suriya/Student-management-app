@@ -19,6 +19,9 @@ Rails.application.routes.draw do
 
 
   resources :students do
+    collection do
+      post :generate_all_reports
+    end
     member do
       delete :remove_profile_photo
       delete :remove_document

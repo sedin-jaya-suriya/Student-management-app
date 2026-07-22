@@ -8,7 +8,7 @@ RSpec.describe ReportCardGenerator do
       expect {
         ReportCardGenerator.call(student)
       }.to change { student.report_card.attached? }.from(false).to(true)
-      
+
       expect(student.report_card.filename.to_s).to eq("ReportCard_#{student.id}.pdf")
       expect(student.report_card.content_type).to eq("application/pdf")
     end

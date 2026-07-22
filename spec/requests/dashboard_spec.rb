@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe "Dashboards", type: :request do
   let(:admin) { create(:user, :admin) }
   let(:teacher) { create(:user, :teacher) }
-  
+
   describe "GET /" do
     context "when admin is logged in" do
       before do

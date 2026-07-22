@@ -4,7 +4,7 @@ RSpec.describe "Students", type: :request do
   let(:teacher) { create(:user, :teacher) }
   let(:admin) { create(:user, :admin) }
   let!(:student) { create(:student, teacher: teacher) }
-  
+
   before do
     sign_in teacher
   end
@@ -129,7 +129,7 @@ RSpec.describe "Students", type: :request do
 
   describe "DELETE /students/:id/remove_profile_photo" do
     let(:student_with_photo) { create(:student, :with_photo, teacher: teacher) }
-    
+
     it "removes the profile photo" do
       delete remove_profile_photo_student_path(student_with_photo)
       student_with_photo.reload
@@ -139,7 +139,7 @@ RSpec.describe "Students", type: :request do
 
   describe "DELETE /students/:id/remove_document" do
     let(:student_with_doc) { create(:student, :with_document, teacher: teacher) }
-    
+
     it "removes the document" do
       attachment = student_with_doc.documents.first
       delete remove_document_student_path(student_with_doc, attachment_id: attachment.id)
@@ -153,7 +153,7 @@ RSpec.describe "Students", type: :request do
       expect {
         post generate_report_student_path(student)
       }.to have_enqueued_job(ReportCardGenerationJob).with(student.id)
-      
+
       expect(response).to redirect_to(student_path(student))
       expect(flash[:notice]).to eq("Report generation has been queued successfully.")
     end
