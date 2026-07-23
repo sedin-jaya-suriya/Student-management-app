@@ -1,0 +1,21 @@
+<h2>Hello <%= @student.name %>,</h2>
+<p>Your assignment has been submitted successfully.</p>
+<p>
+  <b>Assignment Name:</b>
+  <%= @document.filename.to_s %>
+</p>
+
+<p>
+  <b>Submission Time:</b>
+  <%= @document.created_at.strftime("%d-%m-%Y %I:%M %p") %>
+</p>
+
+<p>
+  <b>Teacher:</b>
+  <%= @student.teacher.name %>
+</p>
+
+<p>
+  Regards,<br>
+  ABC Academy
+</p>

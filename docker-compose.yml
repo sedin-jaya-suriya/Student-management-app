@@ -1,0 +1,29 @@
+services:
+  web:
+    build: .
+    container_name: student_management_app
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails db:prepare && bundle exec rails server -b 0.0.0.0"
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+    environment:
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      - redis
+
+  sidekiq:
+    build: .
+    container_name: student_management_sidekiq
+    command: bundle exec sidekiq
+    volumes:
+      - .:/app
+    environment:
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:alpine
+    container_name: student_management_redis
+    restart: unless-stopped

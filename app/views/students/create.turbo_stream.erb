@@ -1,0 +1,25 @@
+<% if student_scope.search(params[:search]).by_course(params[:course]).exists?(@student.id) %>
+  <%# Remove the "no students" placeholder row if it exists %>
+  <%= turbo_stream.remove "no_students_row" %>
+
+  <%# Append the new student row to the table %>
+  <%= turbo_stream.append "students_tbody" do %>
+    <%= render partial: "student", locals: { student: @student } %>
+  <% end %>
+<% end %>
+
+<%# Update the student counter %>
+<%= turbo_stream.update "student_count", student_scope.count %>
+
+<%# Reset the add student form %>
+<%= turbo_stream.update "new_student" do %>
+  <%= render "form", student: Student.new %>
+<% end %>
+
+<%# Show success flash message %>
+<%= turbo_stream.update "flash_messages" do %>
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <i class="bi bi-check-circle me-1"></i> Student "<%= @student.name %>" was created successfully.
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+<% end %>

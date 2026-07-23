@@ -1,5 +1,16 @@
 class StudentsController < ApplicationController
-  before_action :set_student, only: [:show, :edit, :update, :destroy]
+  before_action :set_student, only: [
+    :show,
+    :edit,
+    :update,
+    :destroy,
+    :remove_profile_photo,
+    :remove_document,
+    :generate_report,
+    :download_report
+  ]
+
+  helper_method :student_scope
 
   def index
     @students = student_scope
@@ -11,10 +22,14 @@ class StudentsController < ApplicationController
   end
 
   def new
-    @student = Student.new  
+    @student = Student.new
   end
 
   def edit
+    respond_to do |format|
+      format.html
+      format.turbo_stream
+    end
   end
 
   def create
@@ -25,23 +40,85 @@ class StudentsController < ApplicationController
     end
 
     if @student.save
-      redirect_to @student,notice: "Student created successfully."
+      StudentNotificationService.notify_creation(@student, params)
+
+      respond_to do |format|
+        format.html { redirect_to @student, notice: "Student created successfully." }
+        format.turbo_stream
+      end
     else
-      render :new, status: :unprocessable_entity
+      respond_to do |format|
+        format.html { render :new, status: :unprocessable_entity }
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace(
+            "new_student",
+            partial: "form",
+            locals: { student: @student }
+          ), status: :unprocessable_entity
+        end
+      end
     end
   end
 
   def update
+    old_marks = @student.marks
+    old_teacher = @student.teacher_id
+
     if @student.update(student_params)
-      redirect_to @student,notice: "Student updated successfully."
+      StudentNotificationService.notify_update(@student, old_marks, old_teacher, params)
+
+      respond_to do |format|
+        format.html { redirect_to @student, notice: "Student updated successfully." }
+        format.turbo_stream
+      end
     else
-      render :edit, status: :unprocessable_entity
+      respond_to do |format|
+        format.html { render :edit, status: :unprocessable_entity }
+        format.turbo_stream { render :edit, status: :unprocessable_entity }
+      end
     end
   end
 
   def destroy
     @student.destroy
-    redirect_to students_path,notice: "Student deleted successfully."
+    respond_to do |format|
+      format.html { redirect_to students_path, notice: "Student deleted successfully." }
+      format.turbo_stream
+    end
+  end
+
+  def remove_profile_photo
+    @student.profile_photo.purge
+    redirect_to @student, notice: "Profile photo deleted successfully."
+  end
+
+  def remove_document
+    document = @student.documents.find(params[:attachment_id])
+    document.purge
+
+    redirect_to @student, notice: "Document deleted successfully."
+  end
+
+  def generate_report
+    ReportCardGenerationJob.perform_later(@student.id)
+    redirect_to @student, notice: "Report generation has been queued successfully."
+  end
+
+  def generate_all_reports
+    student_scope.find_each do |student|
+      ReportCardGenerationJob.perform_later(student.id)
+    end
+    redirect_to students_path, notice: "Report generation for all students has been queued successfully."
+  end
+
+  def download_report
+    if @student.report_card.attached?
+      send_data @student.report_card.download,
+                filename: "ReportCard_#{@student.id}.pdf",
+                type: "application/pdf"
+    else
+      redirect_to @student, alert: "Report card not found."
+    end
   end
 
   private
@@ -55,16 +132,17 @@ class StudentsController < ApplicationController
   end
 
   def student_params
-    permitted = [
+    params.require(:student).permit(
       :name,
       :email,
       :age,
       :course,
       :city,
-      :marks
-    ]
-
-    params.require(:student).permit(permitted)
+      :marks,
+      :teacher_id,
+      :profile_photo,
+      documents: [],
+      assignments: []
+    )
   end
-
 end

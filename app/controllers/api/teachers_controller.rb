@@ -7,11 +7,11 @@ module Api
     def index
       teachers = if current_user.admin?
                   User.includes(:students).where(role: "teacher")
-                else
+      else
                   User.includes(:students).where(id: current_user.id)
-                end
+      end
 
-      teachers = teachers.where("subject ILIKE ?", "%#{params[:subject]}%") if params[:subject].present?
+      teachers = teachers.where("subject LIKE ?", "%#{params[:subject]}%") if params[:subject].present?
       render json: teachers.map { |teacher| teacher_hash(teacher) }, status: :ok
     end
 
@@ -27,7 +27,7 @@ module Api
       if teacher.save
         render json: teacher_hash(teacher), status: :created
       else
-        render json: { errors: teacher.errors.full_messages }, status: :unprocessable_entity
+        render json: { errors: teacher.errors.full_messages }, status: :unprocessable_content
       end
     end
 
@@ -36,14 +36,14 @@ module Api
       if @teacher.update(permitted_teacher_params)
         render json: teacher_hash(@teacher), status: :ok
       else
-        render json: { errors: @teacher.errors.full_messages }, status: :unprocessable_entity
+        render json: { errors: @teacher.errors.full_messages }, status: :unprocessable_content
       end
     end
 
     # DELETE /api/teachers/:id
     def destroy
       @teacher.destroy
-      head :no_content
+      head :ok
     end
 
     private
@@ -51,16 +51,16 @@ module Api
     def set_teacher
       @teacher = if current_user.admin?
                   User.includes(:students).find_by(id: params[:id], role: "teacher")
-                elsif current_user.id.to_s == params[:id].to_s
+      elsif current_user.id.to_s == params[:id].to_s
                   current_user
-                end
+      end
 
-      render json: { errors: ["Teacher not found"] }, status: :not_found unless @teacher
+      render json: { errors: [ "Teacher not found" ] }, status: :not_found unless @teacher
     end
 
     def authorize_admin!
       return if current_user.admin?
-      render json: { errors: ["Unauthorized"] }, status: :forbidden
+      render json: { errors: [ "Unauthorized" ] }, status: :forbidden
     end
 
     def permitted_teacher_params

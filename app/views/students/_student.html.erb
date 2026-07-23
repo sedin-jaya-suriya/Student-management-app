@@ -1,0 +1,19 @@
+<tr id="<%= dom_id(student) %>">
+  <td class="align-middle"><%= student.name %></td>
+  <td class="align-middle"><%= student.email %></td>
+  <td class="align-middle"><%= student.age %></td>
+  <td class="align-middle"><span class="badge bg-primary text-white"><%= student.course %></span></td>
+  <td class="align-middle"><%= student.city %></td>
+  <td class="align-middle"><%= number_with_delimiter(student.marks) %></td>
+  <td class="text-end align-middle">
+    <%= link_to student_path(student), class: 'btn btn-sm btn-outline-secondary me-1', title: 'View', data: { turbo_frame: "_top" } do %>
+      <i class="bi bi-eye"></i>
+    <% end %>
+    <%= link_to edit_student_path(student), class: 'btn btn-sm btn-outline-secondary me-1', title: 'Edit', data: { turbo_stream: true } do %>
+      <i class="bi bi-pencil"></i>
+    <% end %>
+    <%= button_to student_path(student), method: :delete, data: { turbo_confirm: 'Are you sure?' }, class: 'btn btn-sm btn-danger', title: 'Delete' do %>
+      <i class="bi bi-trash"></i>
+    <% end %>
+  </td>
+</tr>

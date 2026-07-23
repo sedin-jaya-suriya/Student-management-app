@@ -1,0 +1,12 @@
+<%# Replace the student row with updated data %>
+<%= turbo_stream.replace dom_id(@student) do %>
+  <%= render partial: "student", locals: { student: @student } %>
+<% end %>
+
+<%# Show success flash message %>
+<%= turbo_stream.update "flash_messages" do %>
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <i class="bi bi-check-circle me-1"></i> Student "<%= @student.name %>" was updated successfully.
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+<% end %>

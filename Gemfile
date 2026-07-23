@@ -64,12 +64,21 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
+  gem "rspec-rails"
+  gem "factory_bot_rails"
+  gem "simplecov", require: false
+  gem "shoulda-matchers"
 end
 
-gem "fiddle"  
-gem 'devise'
-gem 'jwt'
-gem 'devise-jwt'
-gem 'rack-cors'
+gem "fiddle"
+gem "devise"
+gem "jwt"
+gem "prawn"
+gem "dotenv-rails", groups: [ :development, :test ]
+gem "devise-jwt"
+gem "rack-cors"
 
 
+gem "sidekiq"
+gem "redis"
+gem "rack-session"

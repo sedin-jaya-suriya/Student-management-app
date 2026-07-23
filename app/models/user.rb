@@ -1,4 +1,4 @@
-require 'devise' unless defined?(Devise)
+require "devise" unless defined?(Devise)
 
 class User < ApplicationRecord
   if defined?(Devise)
