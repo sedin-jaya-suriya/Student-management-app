@@ -1,7 +1,7 @@
 {
   "RSpec": {
     "coverage": {
-      "C:/Users/Jayasuriya/Ruby/student/Student-management-app/app/controllers/api/base_controller.rb": {
+      "/app/app/controllers/api/base_controller.rb": {
         "lines": [
           1,
           1,
@@ -68,7 +68,7 @@
           null
         ]
       },
-      "C:/Users/Jayasuriya/Ruby/student/Student-management-app/app/controllers/api/sessions_controller.rb": {
+      "/app/app/controllers/api/sessions_controller.rb": {
         "lines": [
           1,
           1,
@@ -100,7 +100,7 @@
           null
         ]
       },
-      "C:/Users/Jayasuriya/Ruby/student/Student-management-app/app/controllers/api/students_controller.rb": {
+      "/app/app/controllers/api/students_controller.rb": {
         "lines": [
           1,
           1,
@@ -169,7 +169,7 @@
           null
         ]
       },
-      "C:/Users/Jayasuriya/Ruby/student/Student-management-app/app/controllers/api/teacher_students_controller.rb": {
+      "/app/app/controllers/api/teacher_students_controller.rb": {
         "lines": [
           0,
           0,
@@ -230,7 +230,7 @@
           "[\"TeacherStudentsController\", :permitted_student_params, 29, 4, 35, 7]": 0
         }
       },
-      "C:/Users/Jayasuriya/Ruby/student/Student-management-app/app/controllers/api/teachers_controller.rb": {
+      "/app/app/controllers/api/teachers_controller.rb": {
         "lines": [
           1,
           1,
@@ -339,7 +339,7 @@
           null
         ]
       },
-      "C:/Users/Jayasuriya/Ruby/student/Student-management-app/app/controllers/application_controller.rb": {
+      "/app/app/controllers/application_controller.rb": {
         "lines": [
           1,
           1,
@@ -380,7 +380,7 @@
           null
         ]
       },
-      "C:/Users/Jayasuriya/Ruby/student/Student-management-app/app/controllers/dashboard_controller.rb": {
+      "/app/app/controllers/dashboard_controller.rb": {
         "lines": [
           1,
           1,
@@ -420,7 +420,7 @@
           null
         ]
       },
-      "C:/Users/Jayasuriya/Ruby/student/Student-management-app/app/controllers/students_controller.rb": {
+      "/app/app/controllers/students_controller.rb": {
         "lines": [
           1,
           1,
@@ -572,25 +572,25 @@
           null
         ]
       },
-      "C:/Users/Jayasuriya/Ruby/student/Student-management-app/app/helpers/application_helper.rb": {
+      "/app/app/helpers/application_helper.rb": {
         "lines": [
           1,
           null
         ]
       },
-      "C:/Users/Jayasuriya/Ruby/student/Student-management-app/app/helpers/dashboard_helper.rb": {
+      "/app/app/helpers/dashboard_helper.rb": {
         "lines": [
           1,
           null
         ]
       },
-      "C:/Users/Jayasuriya/Ruby/student/Student-management-app/app/helpers/students_helper.rb": {
+      "/app/app/helpers/students_helper.rb": {
         "lines": [
           1,
           null
         ]
       },
-      "C:/Users/Jayasuriya/Ruby/student/Student-management-app/app/jobs/application_job.rb": {
+      "/app/app/jobs/application_job.rb": {
         "lines": [
           1,
           null,
@@ -601,7 +601,7 @@
           null
         ]
       },
-      "C:/Users/Jayasuriya/Ruby/student/Student-management-app/app/jobs/report_card_generation_job.rb": {
+      "/app/app/jobs/report_card_generation_job.rb": {
         "lines": [
           1,
           1,
@@ -618,7 +618,7 @@
           null
         ]
       },
-      "C:/Users/Jayasuriya/Ruby/student/Student-management-app/app/mailers/application_mailer.rb": {
+      "/app/app/mailers/application_mailer.rb": {
         "lines": [
           1,
           1,
@@ -626,63 +626,7 @@
           null
         ]
       },
-      "C:/Users/Jayasuriya/Ruby/student/Student-management-app/app/mailers/student_mailer.rb": {
-        "lines": [
-          1,
-          1,
-          null,
-          1,
-          1,
-          1,
-          null,
-          1,
-          null,
-          null,
-          null,
-          null,
-          null,
-          1,
-          1,
-          1,
-          null,
-          1,
-          null,
-          null,
-          null,
-          null,
-          null,
-          1,
-          1,
-          1,
-          null,
-          1,
-          null,
-          null,
-          null,
-          null,
-          null,
-          1,
-          1,
-          null,
-          1,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          1,
-          1,
-          null,
-          1,
-          null,
-          null,
-          null,
-          null,
-          null
-        ]
-      },
-      "C:/Users/Jayasuriya/Ruby/student/Student-management-app/app/mailers/teacher_mailer.rb": {
+      "/app/app/mailers/student_mailer.rb": {
         "lines": [
           1,
           1,
@@ -696,17 +640,73 @@
           null,
           null,
           null,
+          null,
+          1,
+          1,
+          1,
+          null,
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          1,
+          1,
+          1,
+          null,
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          1,
+          1,
+          null,
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          1,
+          1,
+          null,
+          1,
+          null,
+          null,
+          null,
+          null,
           null
         ]
       },
-      "C:/Users/Jayasuriya/Ruby/student/Student-management-app/app/models/application_record.rb": {
+      "/app/app/mailers/teacher_mailer.rb": {
+        "lines": [
+          1,
+          1,
+          null,
+          1,
+          1,
+          1,
+          null,
+          1,
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      },
+      "/app/app/models/application_record.rb": {
         "lines": [
           1,
           1,
           null
         ]
       },
-      "C:/Users/Jayasuriya/Ruby/student/Student-management-app/app/models/jwt_denylist.rb": {
+      "/app/app/models/jwt_denylist.rb": {
         "lines": [
           1,
           1,
@@ -715,7 +715,7 @@
           null
         ]
       },
-      "C:/Users/Jayasuriya/Ruby/student/Student-management-app/app/models/student.rb": {
+      "/app/app/models/student.rb": {
         "lines": [
           1,
           1,
@@ -818,15 +818,13 @@
           null
         ]
       },
-      "C:/Users/Jayasuriya/Ruby/student/Student-management-app/app/models/user.rb": {
+      "/app/app/models/user.rb": {
         "lines": [
           1,
           null,
           1,
           1,
           1,
-          null,
-          null,
           null,
           null,
           null,
@@ -844,7 +842,7 @@
           null
         ]
       },
-      "C:/Users/Jayasuriya/Ruby/student/Student-management-app/app/services/json_web_token.rb": {
+      "/app/app/services/json_web_token.rb": {
         "lines": [
           1,
           1,
@@ -866,7 +864,7 @@
           null
         ]
       },
-      "C:/Users/Jayasuriya/Ruby/student/Student-management-app/app/services/report_card_generator.rb": {
+      "/app/app/services/report_card_generator.rb": {
         "lines": [
           1,
           1,
@@ -894,7 +892,7 @@
           null
         ]
       },
-      "C:/Users/Jayasuriya/Ruby/student/Student-management-app/app/services/student_notification_service.rb": {
+      "/app/app/services/student_notification_service.rb": {
         "lines": [
           1,
           1,
@@ -937,6 +935,6 @@
         ]
       }
     },
-    "timestamp": 1784720354
+    "timestamp": 1784885257
   }
 }

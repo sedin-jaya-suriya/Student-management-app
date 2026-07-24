@@ -1,4 +1,24 @@
 services:
+  db:
+    image: postgres:17
+    container_name: student_management_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: post123
+      POSTGRES_DB: student_management_app
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:alpine
+    container_name: student_management_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
   web:
     build: .
     container_name: student_management_app
@@ -10,6 +30,7 @@ services:
     environment:
       REDIS_URL: redis://redis:6379/0
     depends_on:
+      - db
       - redis
 
   sidekiq:
@@ -21,9 +42,8 @@ services:
     environment:
       REDIS_URL: redis://redis:6379/0
     depends_on:
+      - db
       - redis
 
-  redis:
-    image: redis:alpine
-    container_name: student_management_redis
-    restart: unless-stopped
+volumes:
+  postgres_data:

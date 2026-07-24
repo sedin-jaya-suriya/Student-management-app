@@ -6,6 +6,8 @@ require "devise/orm/active_record"
 Devise.setup do |config|
   config.mailer_sender = ENV.fetch("DEVISE_MAILER_SENDER", "please-change-me@example.com")
   config.navigational_formats = [ "*/*", :html, :turbo_stream ]
+  config.responder.error_status = :unprocessable_entity
+  config.responder.redirect_status = :see_other
 
   jwt_secret = Rails.application.credentials.devise_jwt_secret || Rails.application.secret_key_base
 
@@ -25,7 +27,6 @@ Devise.setup do |config|
     jwt.expiration_time = 1.day.to_i
   end
 
-  # Skip session storage for http_auth and params_auth, but NOT for :jwt
-  # This ensures web logins store the user in the cookie session as normal
-  config.skip_session_storage = [ :http_auth, :params_auth ]
+  # Skip session storage for API requests (JWT) but NOT for web requests
+  config.skip_session_storage = [ :http_auth, :jwt ]
 end
