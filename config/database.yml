@@ -2,21 +2,34 @@ default: &default
   adapter: postgresql
   encoding: unicode
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  host: db
-  username: postgres
-  password: password
 
 development:
   <<: *default
-  database: student_management_development
+  database: student_management_app
+  host: localhost
+  username: postgres
+  password: post123
 
 test:
   <<: *default
   database: student_management_test
+  host: localhost
+  username: postgres
+  password: post123
 
 production:
-  <<: *default
-  database: student_management_production
-  username: <%= ENV["POSTGRES_USER"] %>
-  password: <%= ENV["POSTGRES_PASSWORD"] %>
-  host: <%= ENV["POSTGRES_HOST"] %>
+  primary:
+    <<: *default
+    url: <%= ENV["DATABASE_URL"] %>
+  cable:
+    <<: *default
+    url: <%= ENV["DATABASE_URL"] %>
+    migrations_paths: db/migrate_cable
+  cache:
+    <<: *default
+    url: <%= ENV["DATABASE_URL"] %>
+    migrations_paths: db/migrate_cache
+  queue:
+    <<: *default
+    url: <%= ENV["DATABASE_URL"] %>
+    migrations_paths: db/migrate_queue
