@@ -14,8 +14,12 @@ RUN bundle install
 # Copy application code
 COPY . .
 
+# Normalize line endings and ensure executable permissions
+RUN sed -i 's/\r$//' bin/render-entrypoint.sh bin/rails bin/setup 2>/dev/null || true
+RUN chmod +x bin/render-entrypoint.sh
+
 # Expose port 3000
 EXPOSE 3000
 
 # The default command is usually overridden in docker-compose, but we provide a sensible default
-CMD ["bash", "-c", "rm -f tmp/pids/server.pid && bundle exec rails server -b 0.0.0.0"]
+CMD ["bin/render-entrypoint.sh"]
