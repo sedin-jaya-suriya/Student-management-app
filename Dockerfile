@@ -16,7 +16,7 @@ COPY . .
 
 # Normalize line endings and ensure executable permissions
 RUN sed -i 's/\r$//' bin/render-entrypoint.sh bin/rails bin/setup 2>/dev/null || true
-RUN chmod +x bin/render-entrypoint.sh
+RUN chmod +x bin/*
 
 # Expose port 3000
 EXPOSE 3000
