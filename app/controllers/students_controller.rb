@@ -49,7 +49,9 @@ class StudentsController < ApplicationController
 
   def update
     if @student.update(student_params)
-      redirect_to @student, notice: "Student updated successfully."
+      redirect_to @student,
+                  notice: "Student updated successfully.",
+                  status: :see_other
     else
       render :edit, status: :unprocessable_entity
     end
