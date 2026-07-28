@@ -6,30 +6,17 @@ default: &default
 development:
   <<: *default
   database: student_management_app
-  host: localhost
+  host: db
   username: postgres
   password: post123
 
 test:
   <<: *default
   database: student_management_test
-  host: localhost
+  host: db
   username: postgres
   password: post123
 
 production:
-  primary:
-    <<: *default
-    url: <%= ENV["DATABASE_URL"] %>
-  cable:
-    <<: *default
-    url: <%= ENV["DATABASE_URL"] %>
-    migrations_paths: db/migrate_cable
-  cache:
-    <<: *default
-    url: <%= ENV["DATABASE_URL"] %>
-    migrations_paths: db/migrate_cache
-  queue:
-    <<: *default
-    url: <%= ENV["DATABASE_URL"] %>
-    migrations_paths: db/migrate_queue
+  <<: *default
+  url: <%= ENV["DATABASE_URL"] %>

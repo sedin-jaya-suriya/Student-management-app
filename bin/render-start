@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -e
+
+echo "Preparing database..."
+bundle exec rails db:prepare
+
+echo "Starting Puma..."
+exec bundle exec puma -C config/puma.rb

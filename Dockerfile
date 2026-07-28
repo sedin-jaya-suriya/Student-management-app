@@ -1,25 +1,45 @@
 FROM ruby:4.0.5
 
-# Install essential Linux packages
+# Install required system packages
 RUN apt-get update -qq && \
-    apt-get install -y build-essential nodejs sqlite3 libsqlite3-dev
+    apt-get install -y \
+      build-essential \
+      nodejs \
+      libpq-dev \
+      postgresql-client \
+    && rm -rf /var/lib/apt/lists/*
 
-# Set working directory
+# Set the application directory
 WORKDIR /app
 
-# Install application gems
+# Copy Gem files first
 COPY Gemfile Gemfile.lock ./
-RUN bundle install
 
-# Copy application code
+# Install Ruby gems
+RUN bundle config set without "development test" && \
+    bundle install
+
+# Copy the complete Rails application
 COPY . .
 
-# Normalize line endings and ensure executable permissions
-RUN sed -i 's/\r$//' bin/render-entrypoint.sh bin/rails bin/setup 2>/dev/null || true
+# Fix Windows CRLF line endings
+RUN sed -i 's/\r$//' \
+      bin/rails \
+      bin/rake \
+      bin/setup \
+      bin/render-entrypoint.sh \
+      2>/dev/null || true
+
+# Make Rails scripts executable
 RUN chmod +x bin/*
 
-# Expose port 3000
+# Precompile CSS and JavaScript assets
+RUN SECRET_KEY_BASE_DUMMY=1 \
+    RAILS_ENV=production \
+    bundle exec rails assets:precompile
+
+# Render provides the PORT environment variable
 EXPOSE 3000
 
-# The default command is usually overridden in docker-compose, but we provide a sensible default
+# Start the Rails application
 CMD ["bin/render-entrypoint.sh"]

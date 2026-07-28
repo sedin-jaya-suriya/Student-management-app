@@ -9,7 +9,7 @@ Devise.setup do |config|
   config.responder.error_status = :unprocessable_entity
   config.responder.redirect_status = :see_other
 
-  jwt_secret = Rails.application.credentials.devise_jwt_secret || Rails.application.secret_key_base
+  jwt_secret = ENV.fetch("DEVISE_JWT_SECRET_KEY", Rails.application.secret_key_base)
 
   config.jwt do |jwt|
     jwt.secret = jwt_secret
