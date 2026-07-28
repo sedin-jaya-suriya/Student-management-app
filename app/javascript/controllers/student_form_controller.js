@@ -59,9 +59,6 @@ export default class extends Controller {
         "text-muted"
       )
     }
-
-    // Validate the form after the name changes.
-    this.validate()
   }
 
   validate() {
@@ -69,6 +66,11 @@ export default class extends Controller {
       return
     }
 
+    this.submitTarget.disabled =
+      !this.allRequiredFieldsFilled()
+  }
+
+  allRequiredFieldsFilled() {
     const requiredFields = [
       this.nameTarget,
       this.emailTarget,
@@ -78,22 +80,15 @@ export default class extends Controller {
       this.marksTarget
     ]
 
-    const allFieldsFilled =
-      requiredFields.every(
-        field =>
-          field.value.trim().length > 0
+    if (this.hasTeacherTarget) {
+      requiredFields.push(
+        this.teacherTarget
       )
+    }
 
-    const teacherSelected =
-      !this.hasTeacherTarget ||
-      this.teacherTarget.value
-        .trim()
-        .length > 0
-
-    this.submitTarget.disabled =
-      !(
-        allFieldsFilled &&
-        teacherSelected
-      )
+    return requiredFields.every(
+      (field) =>
+        field.value.trim().length > 0
+    )
   }
 }

@@ -1,321 +1,207 @@
 <%= form_with(
-      model: student,
-      class: "student-form",
-      data: {
-        controller: "student-form",
-        student_form_max_length_value: 50
-      }
-    ) do |f| %>
+model: student,
+class: "student-form",
+data: {
+controller: "student-form",
+student_form_max_length_value: 50
+}
+) do |f| %>
 
-  <% if student.errors.any? %>
-    <div class="alert alert-danger">
-      <ul class="mb-0">
-        <% student.errors.full_messages.each do |message| %>
-          <li>
-            <%= message %>
-          </li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+<% if student.errors.any? %> <div class="alert alert-danger"> <ul class="mb-0">
+<% student.errors.full_messages.each do |message| %> <li><%= message %></li>
+<% end %> </ul> </div>
+<% end %>
 
   <div class="row g-3">
 
-    <%# Student name %>
-    <div class="col-md-6">
-      <div class="form-group">
+```
+<%# Student name %>
+<div class="col-md-6">
+  <div class="form-group">
+    <%= f.label :name, class: "form-label" %>
 
-        <%= f.label(
-              :name,
-              class: "form-label"
-            ) %>
+    <%= f.text_field :name,
+          class: "form-control",
+          maxlength: 50,
+          required: true,
+          data: {
+            student_form_target: "name",
+            action: "input->student-form#countCharacters input->student-form#validate"
+          } %>
 
-        <%= f.text_field(
-              :name,
-              class: "form-control",
-              maxlength: 50,
-              required: true,
-              data: {
-                student_form_target: "name",
-                action:
-                  "input->student-form#countCharacters"
-              }
-            ) %>
+    <small class="text-muted">
+      <span data-student-form-target="counter">
+        <%= student.name.to_s.length %>
+      </span>
+      / 50 characters
+    </small>
+  </div>
+</div>
 
-        <small class="text-muted">
-          <span
-            data-student-form-target="counter"
-          >
-            0
-          </span>
+<%# Student email %>
+<div class="col-md-6">
+  <div class="form-group">
+    <%= f.label :email, class: "form-label" %>
 
-          / 50 characters
-        </small>
+    <%= f.email_field :email,
+          class: "form-control",
+          required: true,
+          data: {
+            student_form_target: "email",
+            action: "input->student-form#validate"
+          } %>
+  </div>
+</div>
 
-      </div>
-    </div>
+<%# Student age %>
+<div class="col-md-3">
+  <div class="form-group">
+    <%= f.label :age, class: "form-label" %>
 
-    <%# Student email %>
-    <div class="col-md-6">
-      <div class="form-group">
+    <%= f.number_field :age,
+          class: "form-control",
+          required: true,
+          min: 1,
+          data: {
+            student_form_target: "age",
+            action: "input->student-form#validate"
+          } %>
+  </div>
+</div>
 
-        <%= f.label(
-              :email,
-              class: "form-label"
-            ) %>
+<%# Student course %>
+<div class="col-md-3">
+  <div class="form-group">
+    <%= f.label :course, class: "form-label" %>
 
-        <%= f.email_field(
-              :email,
-              class: "form-control",
-              required: true,
-              data: {
-                student_form_target: "email",
-                action:
-                  "input->student-form#validate"
-              }
-            ) %>
+    <%= f.select :course,
+          Student::COURSES,
+          { include_blank: "Select Course" },
+          {
+            class: "form-control",
+            required: true,
+            data: {
+              student_form_target: "course",
+              action: "change->student-form#validate"
+            }
+          } %>
+  </div>
+</div>
 
-      </div>
-    </div>
+<%# Student city %>
+<div class="col-md-3">
+  <div class="form-group">
+    <%= f.label :city, class: "form-label" %>
 
-    <%# Student age %>
-    <div class="col-md-3">
-      <div class="form-group">
+    <%= f.text_field :city,
+          class: "form-control",
+          required: true,
+          data: {
+            student_form_target: "city",
+            action: "input->student-form#validate"
+          } %>
+  </div>
+</div>
 
-        <%= f.label(
-              :age,
-              class: "form-label"
-            ) %>
+<%# Student marks %>
+<div class="col-md-3">
+  <div class="form-group">
+    <%= f.label :marks, class: "form-label" %>
 
-        <%= f.number_field(
-              :age,
-              class: "form-control",
-              required: true,
-              min: 1,
-              data: {
-                student_form_target: "age",
-                action:
-                  "input->student-form#validate"
-              }
-            ) %>
+    <%= f.number_field :marks,
+          class: "form-control",
+          required: true,
+          min: 0,
+          max: 100,
+          data: {
+            student_form_target: "marks",
+            action: "input->student-form#validate"
+          } %>
+  </div>
+</div>
 
-      </div>
-    </div>
+<%# Profile photo %>
+<div class="col-md-6">
+  <div class="form-group">
+    <%= f.label :profile_photo, class: "form-label" %>
 
-    <%# Student course %>
-    <div class="col-md-3">
-      <div class="form-group">
+    <%= f.file_field :profile_photo,
+          class: "form-control",
+          accept: "image/jpeg,image/png" %>
+  </div>
+</div>
 
-        <%= f.label(
-              :course,
-              class: "form-label"
-            ) %>
+<%# Student documents %>
+<div class="col-md-6">
+  <div class="form-group">
+    <%= f.label :documents, class: "form-label" %>
 
-        <%= f.select(
-              :course,
-              Student::COURSES,
-              {
-                include_blank:
-                  "Select Course"
-              },
-              {
-                class: "form-control",
-                required: true,
-                data: {
-                  student_form_target:
-                    "course",
-                  action:
-                    "change->student-form#validate"
-                }
-              }
-            ) %>
+    <%= f.file_field :documents,
+          multiple: true,
+          class: "form-control",
+          accept: "application/pdf,image/jpeg,image/png" %>
+  </div>
+</div>
 
-      </div>
-    </div>
+<%# Teacher selection %>
+<div class="col-md-6">
+  <% if current_user.admin? %>
+    <div class="form-group">
+      <%= f.label :teacher_id,
+            "Assign Teacher",
+            class: "form-label" %>
 
-    <%# Student city %>
-    <div class="col-md-3">
-      <div class="form-group">
-
-        <%= f.label(
-              :city,
-              class: "form-label"
-            ) %>
-
-        <%= f.text_field(
-              :city,
-              class: "form-control",
-              required: true,
-              data: {
-                student_form_target:
-                  "city",
-                action:
-                  "input->student-form#validate"
-              }
-            ) %>
-
-      </div>
-    </div>
-
-    <%# Student marks %>
-    <div class="col-md-3">
-      <div class="form-group">
-
-        <%= f.label(
-              :marks,
-              class: "form-label"
-            ) %>
-
-        <%= f.number_field(
-              :marks,
+      <%= f.collection_select :teacher_id,
+            User.teacher,
+            :id,
+            :email,
+            { prompt: "Select Teacher" },
+            {
               class: "form-control",
               required: true,
-              min: 0,
-              max: 100,
               data: {
-                student_form_target:
-                  "marks",
-                action:
-                  "input->student-form#validate"
+                student_form_target: "teacher",
+                action: "change->student-form#validate"
               }
-            ) %>
-
-      </div>
+            } %>
     </div>
+  <% else %>
+    <%= f.hidden_field :teacher_id,
+          value: current_user.id %>
+  <% end %>
+</div>
 
-    <%# Profile photo %>
-    <div class="col-md-6">
-      <div class="form-group">
+<%# Form buttons %>
+<div class="col-12">
+  <div class="d-flex gap-2">
 
-        <%= f.label(
-              :profile_photo,
-              class: "form-label"
-            ) %>
+    <%= f.submit(
+          student.persisted? ? "Update Student" : "Add Student",
+          class: "btn btn-primary",
+          disabled: true,
+          data: {
+            student_form_target: "submit"
+          }
+        ) %>
 
-        <%= f.file_field(
-              :profile_photo,
-              class: "form-control",
-              accept:
-                "image/jpeg,image/png"
-            ) %>
-
-      </div>
-    </div>
-
-    <%# Student documents %>
-    <div class="col-md-6">
-      <div class="form-group">
-
-        <%= f.label(
-              :documents,
-              class: "form-label"
-            ) %>
-
-        <%= f.file_field(
-              :documents,
-              multiple: true,
-              class: "form-control",
-              accept:
-                "application/pdf,image/jpeg,image/png"
-            ) %>
-
-      </div>
-    </div>
-
-    <%# Teacher selection %>
-    <div class="col-md-6">
-
-      <% if current_user.admin? %>
-
-        <div class="form-group">
-
-          <%= f.label(
-                :teacher_id,
-                "Assign Teacher",
-                class: "form-label"
-              ) %>
-
-          <%= f.collection_select(
-                :teacher_id,
-                User.teacher,
-                :id,
-                :email,
-                {
-                  prompt:
-                    "Select Teacher"
-                },
-                {
-                  class:
-                    "form-control",
-                  required:
-                    true,
-                  data: {
-                    student_form_target:
-                      "teacher",
-                    action:
-                      "change->student-form#validate"
-                  }
-                }
-              ) %>
-
-        </div>
-
-      <% else %>
-
-        <%= f.hidden_field(
-              :teacher_id,
-              value: current_user.id
-            ) %>
-
-      <% end %>
-
-    </div>
-
-    <%# Form buttons %>
-    <div class="col-12">
-
-      <div class="d-flex gap-2">
-
-        <%= f.submit(
-              student.persisted? ?
-                "Update Student" :
-                "Add Student",
-              class:
-                "btn btn-primary",
-              disabled:
-                true,
-              data: {
-                student_form_target:
-                  "submit"
-              }
-            ) %>
-
-        <% if student.persisted? %>
-
-          <%= link_to(
-                "Cancel",
-                student_path(student),
-                class:
-                  "btn btn-secondary"
-              ) %>
-
-        <% else %>
-
-          <button
-            type="button"
-            class="btn btn-secondary"
-            data-bs-toggle="collapse"
-            data-bs-target="#new_student_form"
-          >
-            Cancel
-          </button>
-
-        <% end %>
-
-      </div>
-
-    </div>
+    <% if student.persisted? %>
+      <%= link_to "Cancel",
+            student_path(student),
+            class: "btn btn-secondary" %>
+    <% else %>
+      <button
+        type="button"
+        class="btn btn-secondary"
+        data-bs-toggle="collapse"
+        data-bs-target="#new_student_form"
+      >
+        Cancel
+      </button>
+    <% end %>
 
   </div>
+</div>
+```
 
+  </div>
 <% end %>
