@@ -32,21 +32,20 @@ class StudentsController < ApplicationController
     end
   end
 
-  def create
-  @student = Student.new(student_params)
+    def create
+      @student = Student.new(student_params)
 
-  if current_user.teacher?
-    @student.teacher = current_user
-  end
+      if current_user.teacher?
+        @student.teacher = current_user
+      end
 
-  if @student.save
-    StudentNotificationService.notify_creation(@student, params)
-
+    if @student.save
     redirect_to @student, notice: "Student created successfully."
-  else
+    else
     render :new, status: :unprocessable_entity
+    end
   end
-  end
+
 
   def update
     old_marks = @student.marks
