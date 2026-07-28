@@ -1,11 +1,13 @@
 <%= form_with(
-model: student,
-class: "student-form",
-data: {
-controller: "student-form",
-student_form_max_length_value: 50
-}
+  model: student,
+  class: "student-form",
+  data: {
+    turbo: false,
+    controller: "student-form",
+    student_form_max_length_value: 50
+  }
 ) do |f| %>
+
 
 <% if student.errors.any? %> <div class="alert alert-danger"> <ul class="mb-0">
 <% student.errors.full_messages.each do |message| %> <li><%= message %></li>
