@@ -48,21 +48,10 @@ class StudentsController < ApplicationController
 
 
   def update
-    old_marks = @student.marks
-    old_teacher = @student.teacher_id
-
     if @student.update(student_params)
-      StudentNotificationService.notify_update(@student, old_marks, old_teacher, params)
-
-      respond_to do |format|
-        format.html { redirect_to @student, notice: "Student updated successfully." }
-        format.turbo_stream
-      end
+      redirect_to @student, notice: "Student updated successfully."
     else
-      respond_to do |format|
-        format.html { render :edit, status: :unprocessable_entity }
-        format.turbo_stream { render :edit, status: :unprocessable_entity }
-      end
+      render :edit, status: :unprocessable_entity
     end
   end
 
@@ -87,8 +76,8 @@ class StudentsController < ApplicationController
   end
 
   def generate_report
-    ReportCardGenerationJob.perform_later(@student.id)
-    redirect_to @student, notice: "Report generation has been queued successfully."
+    ReportCardGenerationJob.perform_now(@student.id)
+    redirect_to @student, notice: "Report generated successfully."
   end
 
   def generate_all_reports
