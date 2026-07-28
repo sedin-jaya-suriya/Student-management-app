@@ -33,31 +33,19 @@ class StudentsController < ApplicationController
   end
 
   def create
-    @student = Student.new(student_params)
+  @student = Student.new(student_params)
 
-    if current_user.teacher?
-      @student.teacher = current_user
-    end
+  if current_user.teacher?
+    @student.teacher = current_user
+  end
 
-    if @student.save
-      StudentNotificationService.notify_creation(@student, params)
+  if @student.save
+    StudentNotificationService.notify_creation(@student, params)
 
-      respond_to do |format|
-        format.html { redirect_to @student, notice: "Student created successfully." }
-        format.turbo_stream
-      end
-    else
-      respond_to do |format|
-        format.html { render :new, status: :unprocessable_entity }
-        format.turbo_stream do
-          render turbo_stream: turbo_stream.replace(
-            "new_student",
-            partial: "form",
-            locals: { student: @student }
-          ), status: :unprocessable_entity
-        end
-      end
-    end
+    redirect_to @student, notice: "Student created successfully."
+  else
+    render :new, status: :unprocessable_entity
+  end
   end
 
   def update
