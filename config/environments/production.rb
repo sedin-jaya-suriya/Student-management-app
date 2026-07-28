@@ -58,11 +58,7 @@ Rails.application.configure do
   # Use Solid Queue for background jobs.
   config.active_job.queue_adapter = :solid_queue
 
-  config.solid_queue.connects_to = {
-    database: {
-      writing: :queue
-    }
-  }
+
 
   # Use the Render URL for links generated in emails.
   config.action_mailer.default_url_options = {
