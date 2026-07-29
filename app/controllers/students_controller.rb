@@ -49,7 +49,7 @@ class StudentsController < ApplicationController
 
   def update
     if @student.update(student_params)
-      redirect_to @student,
+      redirect_to students_path,
                   notice: "Student updated successfully.",
                   status: :see_other
     else
@@ -79,8 +79,8 @@ class StudentsController < ApplicationController
 
   def generate_report
     begin
-      StudentMailer.report_card(@student).deliver_now
-      redirect_to @student, notice: "Report generated successfully. The report has been emailed to the student.", status: :see_other
+      StudentMailer.report_card(@student).deliver_later
+      redirect_to @student, notice: "Report card generated successfully.", status: :see_other
     rescue => e
       Rails.logger.error "Failed to generate report for Student #{@student.id}: #{e.message}"
       redirect_to @student, alert: "Failed to generate the report card.", status: :see_other
@@ -88,14 +88,15 @@ class StudentsController < ApplicationController
   end
 
   def generate_all_reports
-    student_scope.find_each do |student|
-      begin
-        StudentMailer.report_card(student).deliver_now
-      rescue => e
-        Rails.logger.error "Failed to deliver report card to student #{student.id}: #{e.message}"
+    begin
+      student_scope.find_each do |student|
+        StudentMailer.report_card(student).deliver_later
       end
+      redirect_to students_path, notice: "Report card generation has started for all students.", status: :see_other
+    rescue => e
+      Rails.logger.error "Failed to enqueue report generation: #{e.message}"
+      redirect_to students_path, alert: "Failed to start report generation.", status: :see_other
     end
-    redirect_to students_path, notice: "Report generation completed successfully for all students.", status: :see_other
   end
 
   def download_report

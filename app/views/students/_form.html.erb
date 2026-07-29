@@ -187,7 +187,7 @@
 
     <% if student.persisted? %>
       <%= link_to "Cancel",
-            student_path(student),
+            students_path,
             class: "btn btn-secondary" %>
     <% else %>
       <button
