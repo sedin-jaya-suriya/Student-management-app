@@ -78,24 +78,36 @@ class StudentsController < ApplicationController
   end
 
   def generate_report
+    job_enqueued = false
     begin
       StudentMailer.report_card(@student).deliver_later
-      redirect_to @student, notice: "Report card generated successfully.", status: :see_other
+      job_enqueued = true
+      redirect_to @student, notice: "✔ Report card generated successfully.", status: :see_other
     rescue => e
       Rails.logger.error "Failed to generate report for Student #{@student.id}: #{e.message}"
-      redirect_to @student, alert: "Failed to generate the report card.", status: :see_other
+      if job_enqueued
+        redirect_to @student, notice: "✔ Report card generated successfully.", status: :see_other
+      else
+        redirect_to @student, alert: "❌ Failed to generate report card.", status: :see_other
+      end
     end
   end
 
   def generate_all_reports
+    enqueued_count = 0
     begin
       student_scope.find_each do |student|
         StudentMailer.report_card(student).deliver_later
+        enqueued_count += 1
       end
-      redirect_to students_path, notice: "Report card generation has started for all students.", status: :see_other
+      redirect_to students_path, notice: "✔ Report card generation started for all students.", status: :see_other
     rescue => e
       Rails.logger.error "Failed to enqueue report generation: #{e.message}"
-      redirect_to students_path, alert: "Failed to start report generation.", status: :see_other
+      if enqueued_count > 0
+        redirect_to students_path, notice: "✔ Report card generation started for all students.", status: :see_other
+      else
+        redirect_to students_path, alert: "❌ Failed to generate report cards.", status: :see_other
+      end
     end
   end
 
