@@ -56,7 +56,7 @@ Rails.application.configure do
   config.cache_store = :solid_cache_store
 
   # Use Solid Queue for background jobs.
-  config.active_job.queue_adapter = :solid_queue
+  config.active_job.queue_adapter = :async
 
 
 
