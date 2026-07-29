@@ -9,16 +9,13 @@ class ReportCardGenerator
     pdf.move_down 10
 
     pdf.text "Name: #{student.name}"
+    pdf.text "Email: #{student.email}"
     pdf.text "Course: #{student.course}"
     pdf.text "Marks: #{student.marks}"
+    pdf.text "Total: 100"
+    pdf.text "Percentage: #{student.marks}%"
     pdf.text "Result: #{student.result}"
 
-    pdf_data = pdf.render
-
-    student.report_card.attach(
-      io: StringIO.new(pdf_data),
-      filename: "ReportCard_#{student.id}.pdf",
-      content_type: "application/pdf"
-    )
+    pdf.render
   end
 end

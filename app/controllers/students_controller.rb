@@ -78,30 +78,35 @@ class StudentsController < ApplicationController
   end
 
   def generate_report
-    ReportCardGenerator.call(@student)
-    if @student.report_card.attached?
+    begin
       StudentMailer.report_card(@student).deliver_now
+      redirect_to @student, notice: "Report generated successfully. The report has been emailed to the student."
+    rescue => e
+      Rails.logger.error "Failed to generate report for Student #{@student.id}: #{e.message}"
+      redirect_to @student, alert: "Failed to generate the report card."
     end
-    redirect_to @student, notice: "Report generated successfully."
   end
 
   def generate_all_reports
     student_scope.find_each do |student|
-      ReportCardGenerator.call(student)
-      if student.report_card.attached?
+      begin
         StudentMailer.report_card(student).deliver_now
+      rescue => e
+        Rails.logger.error "Failed to deliver report card to student #{student.id}: #{e.message}"
       end
     end
-    redirect_to students_path, notice: "Report generation for all students has been completed successfully."
+    redirect_to students_path, notice: "Report generation completed successfully for all students."
   end
 
   def download_report
-    if @student.report_card.attached?
-      send_data @student.report_card.download,
+    begin
+      pdf_data = ReportCardGenerator.call(@student)
+      send_data pdf_data,
                 filename: "ReportCard_#{@student.id}.pdf",
                 type: "application/pdf"
-    else
-      redirect_to @student, alert: "Report card not found."
+    rescue => e
+      Rails.logger.error "Failed to download report for Student #{@student.id}: #{e.message}"
+      redirect_to @student, alert: "Failed to download the report card."
     end
   end
 
