@@ -29,8 +29,9 @@ Rails.application.configure do
     "cache-control" => "public, max-age=#{1.year.to_i}"
   }
 
-  # Use Amazon S3 for Active Storage uploads to avoid Render ephemeral disk loss.
-  config.active_storage.service = :amazon
+  # Use local storage for Active Storage uploads on Render.
+  # Note: On Render Free tier, this disk is ephemeral.
+  config.active_storage.service = :local
 
   # Render terminates SSL before forwarding requests to Rails.
   config.assume_ssl = true
