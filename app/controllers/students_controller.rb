@@ -81,15 +81,10 @@ class StudentsController < ApplicationController
     begin
       StudentMailer.report_card(@student).deliver_later
     rescue => e
-      if e.class.name.match?(/Redis|Socket|Connection|Serialization/i)
-        Rails.logger.error "Fatal error generating report for Student #{@student.id}: #{e.message}"
-        return redirect_to @student, alert: "❌ Failed to generate report card.", status: :see_other
-      else
-        Rails.logger.warn "Non-fatal error generating report for Student #{@student.id}: #{e.message}"
-      end
+      Rails.logger.error "Error generating report for Student #{@student.id}: #{e.message}"
     end
     
-    redirect_to @student, notice: "✅ Report card generated successfully.", status: :see_other
+    redirect_to @student, status: :see_other
   end
 
   def generate_all_reports
@@ -98,15 +93,10 @@ class StudentsController < ApplicationController
         StudentMailer.report_card(student).deliver_later
       end
     rescue => e
-      if e.class.name.match?(/Redis|Socket|Connection|Serialization/i)
-        Rails.logger.error "Fatal error enqueuing report generation: #{e.message}"
-        return redirect_to students_path, alert: "❌ Failed to generate report cards.", status: :see_other
-      else
-        Rails.logger.warn "Non-fatal error enqueuing report generation: #{e.message}"
-      end
+      Rails.logger.error "Error enqueuing report generation: #{e.message}"
     end
     
-    redirect_to students_path, notice: "✅ Report card generation started for all students.", status: :see_other
+    redirect_to students_path, status: :see_other
   end
 
   def download_report

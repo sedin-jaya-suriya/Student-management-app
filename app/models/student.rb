@@ -72,26 +72,26 @@ class Student < ApplicationRecord
 
   private
     def profile_photo_validation
-        return unless profile_photo.attached?
+        return unless profile_photo.attached? && !profile_photo.marked_for_destruction?
         unless profile_photo.content_type.in?(%w[image/jpeg image/png image/jpg])
             errors.add(:profile_photo, "Must be in the JPG, JPEG, or PNG")
         end
 
-        if profile_photo.blob.byte_size>5.megabytes
+        if profile_photo.byte_size > 5.megabytes
             errors.add(:profile_photo, "Must be below 5 MB")
         end
     end
 
     def document_validation
       return unless documents.attached?
-        documents.each do |doc|
+        documents.reject(&:marked_for_destruction?).each do |doc|
             unless doc.content_type.in?(
                 %w[application/pdf image/jpeg image/png image/jpg]
             )
                 errors.add(:documents, "must be PDF, JPG, JPEG, or PNG")
             end
 
-            if doc.blob.byte_size>10.megabytes
+            if doc.byte_size > 10.megabytes
                 errors.add(:documents, "Must be below 10 MB")
             end
         end
