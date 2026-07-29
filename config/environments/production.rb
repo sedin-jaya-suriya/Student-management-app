@@ -56,8 +56,8 @@ Rails.application.configure do
   # Use Solid Cache.
   config.cache_store = :solid_cache_store
 
-  # Use Sidekiq for background jobs.
-  config.active_job.queue_adapter = :sidekiq
+  # Use the built-in async adapter since Redis is not used
+  config.active_job.queue_adapter = :async
 
 
 
