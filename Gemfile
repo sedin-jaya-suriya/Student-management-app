@@ -80,3 +80,4 @@ gem "rack-cors"
 
 gem "redis"
 gem "rack-session"
+gem "sidekiq"

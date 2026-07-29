@@ -6,16 +6,18 @@ default: &default
 development:
   <<: *default
   database: student_management_app
-  host: db
+  host: 127.0.0.1
   username: postgres
   password: post123
+  port: 5432
 
 test:
   <<: *default
   database: student_management_test
-  host: db
+  host: 127.0.0.1
   username: postgres
   password: post123
+  port: 5432
 
 production:
   <<: *default

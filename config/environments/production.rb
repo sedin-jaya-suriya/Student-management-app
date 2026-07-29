@@ -29,8 +29,8 @@ Rails.application.configure do
     "cache-control" => "public, max-age=#{1.year.to_i}"
   }
 
-  # Use local storage for Active Storage uploads.
-  config.active_storage.service = :local
+  # Use Amazon S3 for Active Storage uploads to avoid Render ephemeral disk loss.
+  config.active_storage.service = :amazon
 
   # Render terminates SSL before forwarding requests to Rails.
   config.assume_ssl = true
@@ -55,8 +55,8 @@ Rails.application.configure do
   # Use Solid Cache.
   config.cache_store = :solid_cache_store
 
-  # Use Solid Queue for background jobs.
-  config.active_job.queue_adapter = :async
+  # Use Sidekiq for background jobs.
+  config.active_job.queue_adapter = :sidekiq
 
 
 

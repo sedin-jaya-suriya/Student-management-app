@@ -36,7 +36,7 @@ class Student < ApplicationRecord
 
   scope :search, ->(term) {
     term.present? ? where(
-      "name LIKE :search OR email LIKE :search",
+      "name ILIKE :search OR email ILIKE :search",
       search: "%#{term}%"
     ) : all
   }
@@ -46,7 +46,7 @@ class Student < ApplicationRecord
   }
 
   scope :by_name, ->(name) {
-    where("name LIKE ?", "%#{name}%")
+    where("name ILIKE ?", "%#{name}%")
   }
 
   scope :by_grade, ->(grade) {
