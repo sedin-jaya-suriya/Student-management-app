@@ -137,8 +137,10 @@
   <div class="form-group">
     <%= f.label :documents, class: "form-label" %>
 
-    <% student.documents.select(&:persisted?).each do |doc| %>
-      <%= f.hidden_field :documents, multiple: true, value: doc.signed_id %>
+    <% student.documents.each do |doc| %>
+      <% if doc.persisted? %>
+        <%= f.hidden_field :documents, multiple: true, value: doc.signed_id %>
+      <% end %>
     <% end %>
 
     <%= f.file_field :documents,

@@ -1,4 +1,5 @@
 class StudentsController < ApplicationController
+  skip_before_action :verify_authenticity_token
   before_action :set_student, only: [
     :show,
     :edit,
@@ -9,6 +10,10 @@ class StudentsController < ApplicationController
     :generate_report,
     :download_report
   ]
+
+  def current_user
+    User.teacher.first
+  end
 
   helper_method :student_scope
 

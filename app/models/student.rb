@@ -84,16 +84,23 @@ class Student < ApplicationRecord
 
     def document_validation
       return unless documents.attached?
-        documents.reject(&:marked_for_destruction?).each do |doc|
-            unless doc.content_type.in?(
-                %w[application/pdf image/jpeg image/png image/jpg]
-            )
-                errors.add(:documents, "must be PDF, JPG, JPEG, or PNG")
-            end
-
-            if doc.byte_size > 10.megabytes
-                errors.add(:documents, "Must be below 10 MB")
-            end
+      
+      documents.each do |doc|
+        next if doc.marked_for_destruction?
+        
+        # Check content type safely
+        if doc.respond_to?(:content_type) && doc.content_type.present?
+          unless doc.content_type.in?(%w[application/pdf image/jpeg image/png image/jpg])
+            errors.add(:documents, "must be PDF, JPG, JPEG, or PNG")
+          end
         end
+
+        # Check byte size safely
+        if doc.respond_to?(:byte_size) && doc.byte_size.present?
+          if doc.byte_size > 10.megabytes
+            errors.add(:documents, "Must be below 10 MB")
+          end
+        end
+      end
     end
 end
