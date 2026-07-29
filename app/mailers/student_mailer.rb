@@ -19,7 +19,7 @@ class StudentMailer < ApplicationMailer
         to: @student.email,
         subject: "Teacher Assigned"
     )
-    end
+  end
 
   def assignment_submitted(student, document)
     @student = student
