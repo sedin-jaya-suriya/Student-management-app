@@ -69,6 +69,21 @@ Rails.application.configure do
     protocol: "https"
   }
 
+  config.action_mailer.delivery_method = :smtp
+
+  config.action_mailer.smtp_settings = {
+    address: ENV["SMTP_ADDRESS"],
+    port: ENV["SMTP_PORT"],
+    domain: ENV["APP_HOST"],
+    user_name: ENV["SMTP_USERNAME"],
+    password: ENV["SMTP_PASSWORD"],
+    authentication: :plain,
+    enable_starttls_auto: true
+  }
+
+  config.action_mailer.perform_deliveries = true
+  config.action_mailer.raise_delivery_errors = true
+
   # Enable locale fallbacks.
   config.i18n.fallbacks = true
 
