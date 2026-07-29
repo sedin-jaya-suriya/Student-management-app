@@ -84,7 +84,7 @@ class StudentsController < ApplicationController
       Rails.logger.error "Error generating report for Student #{@student.id}: #{e.message}"
     end
     
-    redirect_to @student, status: :see_other
+    redirect_to @student, notice: "✅ Successfully generated document.", status: :see_other
   end
 
   def generate_all_reports
@@ -96,7 +96,7 @@ class StudentsController < ApplicationController
       Rails.logger.error "Error enqueuing report generation: #{e.message}"
     end
     
-    redirect_to students_path, status: :see_other
+    redirect_to students_path, notice: "✅ Successfully generated document.", status: :see_other
   end
 
   def download_report
