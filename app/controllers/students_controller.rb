@@ -78,15 +78,21 @@ class StudentsController < ApplicationController
   end
 
   def generate_report
-    ReportCardGenerationJob.perform_now(@student.id)
+    ReportCardGenerator.call(@student)
+    if @student.report_card.attached?
+      StudentMailer.report_card(@student).deliver_now
+    end
     redirect_to @student, notice: "Report generated successfully."
   end
 
   def generate_all_reports
     student_scope.find_each do |student|
-      ReportCardGenerationJob.perform_later(student.id)
+      ReportCardGenerator.call(student)
+      if student.report_card.attached?
+        StudentMailer.report_card(student).deliver_now
+      end
     end
-    redirect_to students_path, notice: "Report generation for all students has been queued successfully."
+    redirect_to students_path, notice: "Report generation for all students has been completed successfully."
   end
 
   def download_report

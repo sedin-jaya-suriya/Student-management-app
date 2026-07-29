@@ -55,26 +55,7 @@ services:
       - db
       - redis
 
-  sidekiq:
-    build: .
 
-    container_name: student_management_sidekiq
-
-    command: bundle exec sidekiq
-
-    volumes:
-      - .:/app
-
-    environment:
-      DB_HOST: db
-      DB_PORT: 5432
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: post123
-      REDIS_URL: redis://redis:6379/0
-
-    depends_on:
-      - db
-      - redis
 
 volumes:
   postgres_data:
