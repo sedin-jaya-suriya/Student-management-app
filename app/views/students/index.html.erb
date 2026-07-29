@@ -37,7 +37,6 @@
   </div>
 
   <%# Search and filter controls %>
-  <%= turbo_frame_tag "students_table" do %>
 
     <div class="card p-3 mb-3">
       <div class="row g-2 align-items-center">
@@ -74,6 +73,7 @@
     </div>
 
     <%# Student table %>
+    <%= turbo_frame_tag "students_table" do %>
     <div class="card p-0">
       <div class="table-responsive">
         <table class="table table-hover mb-0">

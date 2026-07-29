@@ -40,7 +40,7 @@ class StudentsController < ApplicationController
     end
 
     if @student.save
-      redirect_to @student, notice: "Student created successfully."
+      redirect_to students_path, notice: "Student was created successfully.", status: :see_other
     else
       render :new, status: :unprocessable_entity
     end
@@ -60,30 +60,30 @@ class StudentsController < ApplicationController
   def destroy
     @student.destroy
     respond_to do |format|
-      format.html { redirect_to students_path, notice: "Student deleted successfully." }
+      format.html { redirect_to students_path, notice: "Student deleted successfully.", status: :see_other }
       format.turbo_stream
     end
   end
 
   def remove_profile_photo
     @student.profile_photo.purge
-    redirect_to @student, notice: "Profile photo deleted successfully."
+    redirect_to @student, notice: "Profile photo deleted successfully.", status: :see_other
   end
 
   def remove_document
     document = @student.documents.find(params[:attachment_id])
     document.purge
 
-    redirect_to @student, notice: "Document deleted successfully."
+    redirect_to @student, notice: "Document deleted successfully.", status: :see_other
   end
 
   def generate_report
     begin
       StudentMailer.report_card(@student).deliver_now
-      redirect_to @student, notice: "Report generated successfully. The report has been emailed to the student."
+      redirect_to @student, notice: "Report generated successfully. The report has been emailed to the student.", status: :see_other
     rescue => e
       Rails.logger.error "Failed to generate report for Student #{@student.id}: #{e.message}"
-      redirect_to @student, alert: "Failed to generate the report card."
+      redirect_to @student, alert: "Failed to generate the report card.", status: :see_other
     end
   end
 
@@ -95,7 +95,7 @@ class StudentsController < ApplicationController
         Rails.logger.error "Failed to deliver report card to student #{student.id}: #{e.message}"
       end
     end
-    redirect_to students_path, notice: "Report generation completed successfully for all students."
+    redirect_to students_path, notice: "Report generation completed successfully for all students.", status: :see_other
   end
 
   def download_report
@@ -106,7 +106,7 @@ class StudentsController < ApplicationController
                 type: "application/pdf"
     rescue => e
       Rails.logger.error "Failed to download report for Student #{@student.id}: #{e.message}"
-      redirect_to @student, alert: "Failed to download the report card."
+      redirect_to @student, alert: "Failed to download the report card.", status: :see_other
     end
   end
 
