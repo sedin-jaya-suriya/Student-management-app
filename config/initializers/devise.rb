@@ -4,7 +4,10 @@ return unless defined?(Devise)
 require "devise/orm/active_record"
 
 Devise.setup do |config|
-  config.mailer_sender = ENV.fetch("DEVISE_MAILER_SENDER", "please-change-me@example.com")
+  config.mailer_sender = ENV.fetch(
+    "MAILER_FROM",
+    "onboarding@resend.dev"
+    )
   config.navigational_formats = [ "*/*", :html, :turbo_stream ]
   config.responder.error_status = :unprocessable_entity
   config.responder.redirect_status = :see_other
