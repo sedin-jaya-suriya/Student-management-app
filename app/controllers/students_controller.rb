@@ -1,5 +1,5 @@
 class StudentsController < ApplicationController
-  skip_before_action :verify_authenticity_token
+  # skip_before_action :verify_authenticity_token, only: [ :create, :update ]
   before_action :set_student, only: [
     :show,
     :edit,
@@ -88,7 +88,7 @@ class StudentsController < ApplicationController
     rescue => e
       Rails.logger.error "Error generating report for Student #{@student.id}: #{e.message}"
     end
-    
+
     redirect_to @student, notice: "✅ Successfully generated document.", status: :see_other
   end
 
@@ -100,7 +100,7 @@ class StudentsController < ApplicationController
     rescue => e
       Rails.logger.error "Error enqueuing report generation: #{e.message}"
     end
-    
+
     redirect_to students_path, notice: "✅ Successfully generated document.", status: :see_other
   end
 
