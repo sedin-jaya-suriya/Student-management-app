@@ -11,9 +11,6 @@ class StudentsController < ApplicationController
     :download_report
   ]
 
-  def current_user
-    User.teacher.first
-  end
 
   helper_method :student_scope
 
