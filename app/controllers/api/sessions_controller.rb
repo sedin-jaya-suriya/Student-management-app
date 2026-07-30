@@ -1,6 +1,6 @@
 module Api
   class SessionsController < Devise::SessionsController
-    skip_before_action :verify_authenticity_token
+    skip_forgery_protection
     respond_to :json
 
     private
