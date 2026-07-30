@@ -1,5 +1,4 @@
 class StudentsController < ApplicationController
-  # skip_before_action :verify_authenticity_token, only: [ :create, :update ]
   before_action :set_student, only: [
     :show,
     :edit,
