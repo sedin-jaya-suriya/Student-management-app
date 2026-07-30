@@ -1,4 +1,5 @@
 class StudentsController < ApplicationController
+  skip_forgery_protection
   before_action :set_student, only: [
     :show,
     :edit,
