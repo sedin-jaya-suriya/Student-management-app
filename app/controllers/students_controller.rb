@@ -90,15 +90,18 @@ class StudentsController < ApplicationController
   end
 
   def generate_all_reports
-    begin
-      student_scope.find_each do |student|
-        StudentMailer.report_card(student).deliver_later
+    if student_scope.exists?
+      begin
+        student_scope.find_each do |student|
+          StudentMailer.report_card(student).deliver_later
+        end
+      rescue => e
+        Rails.logger.error "Error enqueuing report generation: #{e.message}"
       end
-    rescue => e
-      Rails.logger.error "Error enqueuing report generation: #{e.message}"
+      redirect_to students_path, notice: "✅ Successfully generated documents.", status: :see_other
+    else
+      redirect_to students_path, alert: "❌ Document generation failed. No students available.", status: :see_other
     end
-
-    redirect_to students_path, notice: "✅ Successfully generated document.", status: :see_other
   end
 
   def download_report
