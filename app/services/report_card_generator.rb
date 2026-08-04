@@ -16,6 +16,14 @@ class ReportCardGenerator
     pdf.text "Percentage: #{student.marks}%"
     pdf.text "Result: #{student.result}"
 
-    pdf.render
+    pdf_content = pdf.render
+
+    student.report_card.attach(
+      io: StringIO.new(pdf_content),
+      filename: "ReportCard_#{student.id}.pdf",
+      content_type: "application/pdf"
+    )
+
+    pdf_content
   end
 end

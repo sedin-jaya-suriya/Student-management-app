@@ -42,7 +42,7 @@ class StudentsController < ApplicationController
     end
 
     if @student.save
-      redirect_to students_path, notice: "Student was created successfully.", status: :see_other
+      redirect_to @student, notice: "Student was created successfully.", status: :see_other
     else
       render :new, status: :unprocessable_entity
     end
@@ -51,7 +51,7 @@ class StudentsController < ApplicationController
 
   def update
     if @student.update(student_params)
-      redirect_to students_path,
+      redirect_to @student,
                   notice: "Student updated successfully.",
                   status: :see_other
     else
@@ -81,7 +81,7 @@ class StudentsController < ApplicationController
 
   def generate_report
     begin
-      StudentMailer.report_card(@student).deliver_later
+      ReportCardGenerationJob.perform_later(@student.id)
     rescue => e
       Rails.logger.error "Error generating report for Student #{@student.id}: #{e.message}"
     end

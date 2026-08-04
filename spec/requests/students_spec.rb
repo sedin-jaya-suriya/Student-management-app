@@ -155,7 +155,7 @@ RSpec.describe "Students", type: :request do
       }.to have_enqueued_job(ReportCardGenerationJob).with(student.id)
 
       expect(response).to redirect_to(student_path(student))
-      expect(flash[:notice]).to eq("Report generation has been queued successfully.")
+      expect(flash[:notice]).to eq("✅ Successfully generated document.")
     end
   end
 end

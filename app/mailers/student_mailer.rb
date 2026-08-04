@@ -1,5 +1,4 @@
 class StudentMailer < ApplicationMailer
-  default from: ENV.fetch("MAILER_FROM", "no-reply@abcacademy.example")
 
   def welcome_email(student)
     @student = student
