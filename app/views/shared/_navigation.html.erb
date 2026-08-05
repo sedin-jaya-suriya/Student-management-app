@@ -21,8 +21,13 @@
 
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
         <% if user_signed_in? %>
-          <li class="nav-item me-2 muted">Signed in as <strong><%= current_user.email %></strong></li>
-          <li class="nav-item">
+          <li class="nav-item me-3 d-flex flex-column text-md-end text-start mb-2 mb-md-0 lh-1 justify-content-center">
+            <span class="fw-semibold text-dark"><%= current_user.name.presence || current_user.email.split('@').first.capitalize %></span>
+            <span class="text-muted mt-1" style="font-size: 0.75rem;">
+              <%= current_user.email %> &bull; <span class="badge bg-secondary-subtle text-secondary border px-1 rounded-1"><%= current_user.role.titleize %></span>
+            </span>
+          </li>
+          <li class="nav-item d-flex align-items-center">
             <%= button_to 'Logout', destroy_user_session_path, method: :delete, class: 'btn btn-outline-danger btn-sm' %>
           </li>
         <% else %>

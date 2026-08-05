@@ -1,5 +1,18 @@
 class StudentsController < ApplicationController
-  before_action :set_student, only: [:show, :edit, :update, :destroy]
+  skip_forgery_protection
+  before_action :set_student, only: [
+    :show,
+    :edit,
+    :update,
+    :destroy,
+    :remove_profile_photo,
+    :remove_document,
+    :generate_report,
+    :download_report
+  ]
+
+
+  helper_method :student_scope
 
   def index
     @students = student_scope
@@ -11,10 +24,14 @@ class StudentsController < ApplicationController
   end
 
   def new
-    @student = Student.new  
+    @student = Student.new
   end
 
   def edit
+    respond_to do |format|
+      format.html
+      format.turbo_stream
+    end
   end
 
   def create
@@ -25,15 +42,18 @@ class StudentsController < ApplicationController
     end
 
     if @student.save
-      redirect_to @student,notice: "Student created successfully."
+      redirect_to @student, notice: "Student was created successfully.", status: :see_other
     else
       render :new, status: :unprocessable_entity
     end
   end
 
+
   def update
     if @student.update(student_params)
-      redirect_to @student,notice: "Student updated successfully."
+      redirect_to @student,
+                  notice: "Student updated successfully.",
+                  status: :see_other
     else
       render :edit, status: :unprocessable_entity
     end
@@ -41,7 +61,59 @@ class StudentsController < ApplicationController
 
   def destroy
     @student.destroy
-    redirect_to students_path,notice: "Student deleted successfully."
+    respond_to do |format|
+      format.html { redirect_to students_path, notice: "Student deleted successfully.", status: :see_other }
+      format.turbo_stream
+    end
+  end
+
+  def remove_profile_photo
+    @student.profile_photo.purge
+    redirect_to @student, notice: "Profile photo deleted successfully.", status: :see_other
+  end
+
+  def remove_document
+    document = @student.documents.find(params[:attachment_id])
+    document.purge
+
+    redirect_to @student, notice: "Document deleted successfully.", status: :see_other
+  end
+
+  def generate_report
+    begin
+      ReportCardGenerationJob.perform_later(@student.id)
+    rescue => e
+      Rails.logger.error "Error generating report for Student #{@student.id}: #{e.message}"
+    end
+
+    redirect_to @student, notice: "✅ Successfully generated document.", status: :see_other
+  end
+
+  def generate_all_reports
+    if student_scope.exists?
+      begin
+        student_scope.find_each do |student|
+          StudentMailer.report_card(student).deliver_later
+        end
+      rescue => e
+        Rails.logger.error "Error enqueuing report generation: #{e.message}"
+      end
+      redirect_to students_path, notice: "✅ Successfully generated documents.", status: :see_other
+    else
+      redirect_to students_path, alert: "❌ Document generation failed. No students available.", status: :see_other
+    end
+  end
+
+  def download_report
+    begin
+      pdf_data = ReportCardGenerator.call(@student)
+      send_data pdf_data,
+                filename: "ReportCard_#{@student.id}.pdf",
+                type: "application/pdf"
+    rescue => e
+      Rails.logger.error "Failed to download report for Student #{@student.id}: #{e.message}"
+      redirect_to @student, alert: "Failed to download the report card.", status: :see_other
+    end
   end
 
   private
@@ -55,16 +127,17 @@ class StudentsController < ApplicationController
   end
 
   def student_params
-    permitted = [
+    params.require(:student).permit(
       :name,
       :email,
       :age,
       :course,
       :city,
-      :marks
-    ]
-
-    params.require(:student).permit(permitted)
+      :marks,
+      :teacher_id,
+      :profile_photo,
+      documents: [],
+      assignments: []
+    )
   end
-
 end

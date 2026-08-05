@@ -2,33 +2,45 @@ Rails.application.routes.draw do
   # Standard web routes for Devise (keeps /users/sign_in available)
   devise_for :users
 
-  # Web UI resources
-  resources :students
+  get "admin_dashboard",
+      to: "dashboard#admin"
 
-  # Root route for the web UI
-  root "dashboard#index"
+  get "admin/teachers",
+      to: "dashboard#teachers",
+      as: :admin_teachers
 
-  # Dashboard pages (web UI)
-  get 'dashboard/admin', to: 'dashboard#admin', as: 'admin_dashboard'
-  get 'dashboard/teacher', to: 'dashboard#teacher', as: 'teacher_dashboard'
-  get 'dashboard/teachers', to: 'dashboard#teachers', as: 'teachers_dashboard'
-  get 'dashboard/home', to: 'dashboard#home', as: 'home_dashboard'
-  # Backwards-compatible admin teachers path used by navigation
-  get 'admin/teachers', to: 'dashboard#teachers', as: 'admin_teachers'
+  get "teacher_dashboard",
+      to: "dashboard#teacher"
 
-  # API login/logout mapped to Api::SessionsController
-  devise_scope :user do
-    post 'api/login', to: 'api/sessions#create', defaults: { format: :json }
-    delete 'api/logout', to: 'api/sessions#destroy', defaults: { format: :json }
+  get "up" => "rails/health#show",
+      as: :rails_health_check
+
+  root "dashboard#home"
+
+
+  resources :students do
+    collection do
+      post :generate_all_reports
+    end
+    member do
+      delete :remove_profile_photo
+      delete :remove_document
+      post :generate_report
+      get :download_report
+    end
   end
 
   namespace :api, defaults: { format: :json } do
+    devise_scope :user do
+      post :login, to: "sessions#create", as: :login
+    end
+
     resources :students
 
     resources :teachers do
       resources :students,
-                controller: 'teacher_students',
-                only: [:index, :create]
+                controller: "teacher_students",
+                only: [ :index, :create ]
     end
   end
 end

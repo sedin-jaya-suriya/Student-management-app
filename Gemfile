@@ -5,7 +5,7 @@ gem "rails", "~> 8.1.3"
 # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
 gem "propshaft"
 # Use sqlite3 as the database for Active Record
-gem "sqlite3", ">= 2.1"
+gem "pg", "~> 1.5"
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
@@ -25,7 +25,6 @@ gem "tzinfo-data", platforms: %i[ windows jruby ]
 
 # Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
 gem "solid_cache"
-gem "solid_queue"
 gem "solid_cable"
 
 # Reduces boot times through caching; required in config/boot.rb
@@ -64,12 +63,21 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
+  gem "rspec-rails"
+  gem "factory_bot_rails"
+  gem "simplecov", require: false
+  gem "shoulda-matchers"
 end
 
-gem "fiddle"  
-gem 'devise'
-gem 'jwt'
-gem 'devise-jwt'
-gem 'rack-cors'
+gem "fiddle"
+gem "devise"
+gem "jwt"
+gem "prawn"
+gem "dotenv-rails", groups: [ :development, :test ]
+gem "devise-jwt"
+gem "rack-cors"
 
 
+gem "redis"
+gem "rack-session"
+gem "sidekiq"

@@ -1,5 +1,8 @@
 class Student < ApplicationRecord
   belongs_to :teacher, class_name: "User"
+  has_one_attached :profile_photo
+  has_one_attached :report_card
+  has_many_attached :documents
 
   validates :teacher, presence: true
   validates :name, presence: true
@@ -16,21 +19,25 @@ class Student < ApplicationRecord
               less_than_or_equal_to: 100
             }
 
+  validate :profile_photo_validation
+  validate :document_validation
+
+
   COURSES = %w[Ruby Rails React Java].freeze
 
   PASS_MARK = 35
 
   GRADE_RANGES = {
-    "A" => 85..100,
-    "B" => 70..84,
-    "C" => 50..69,
-    "D" => 35..49,
-    "F" => 0..34
+    "A" => 90..100,
+    "B" => 80..89,
+    "C" => 70..79,
+    "D" => 60..69,
+    "F" => 0..59
   }.freeze
 
   scope :search, ->(term) {
     term.present? ? where(
-      "name LIKE :search OR email LIKE :search",
+      "name ILIKE :search OR email ILIKE :search",
       search: "%#{term}%"
     ) : all
   }
@@ -40,7 +47,7 @@ class Student < ApplicationRecord
   }
 
   scope :by_name, ->(name) {
-    where("name LIKE ?", "%#{name}%")
+    where("name ILIKE ?", "%#{name}%")
   }
 
   scope :by_grade, ->(grade) {
@@ -62,4 +69,38 @@ class Student < ApplicationRecord
       "result" => result
     )
   end
+
+  private
+    def profile_photo_validation
+        return unless profile_photo.attached? && !profile_photo.marked_for_destruction?
+        unless profile_photo.content_type.in?(%w[image/jpeg image/png image/jpg])
+            errors.add(:profile_photo, "Must be in the JPG, JPEG, or PNG")
+        end
+
+        if profile_photo.byte_size > 5.megabytes
+            errors.add(:profile_photo, "Must be below 5 MB")
+        end
+    end
+
+    def document_validation
+      return unless documents.attached?
+      
+      documents.each do |doc|
+        next if doc.marked_for_destruction?
+        
+        # Check content type safely
+        if doc.respond_to?(:content_type) && doc.content_type.present?
+          unless doc.content_type.in?(%w[application/pdf image/jpeg image/png image/jpg])
+            errors.add(:documents, "must be PDF, JPG, JPEG, or PNG")
+          end
+        end
+
+        # Check byte size safely
+        if doc.respond_to?(:byte_size) && doc.byte_size.present?
+          if doc.byte_size > 10.megabytes
+            errors.add(:documents, "Must be below 10 MB")
+          end
+        end
+      end
+    end
 end

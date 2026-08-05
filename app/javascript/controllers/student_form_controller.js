@@ -1,0 +1,94 @@
+import { Controller } from "@hotwired/stimulus"
+
+export default class extends Controller {
+  static targets = [
+    "name",
+    "email",
+    "age",
+    "course",
+    "city",
+    "marks",
+    "teacher",
+    "submit",
+    "counter"
+  ]
+
+  static values = {
+    maxLength: {
+      type: Number,
+      default: 50
+    }
+  }
+
+  connect() {
+    this.countCharacters()
+    this.validate()
+  }
+
+  countCharacters() {
+    if (
+      !this.hasNameTarget ||
+      !this.hasCounterTarget
+    ) {
+      return
+    }
+
+    const characterCount =
+      this.nameTarget.value.length
+
+    this.counterTarget.textContent =
+      characterCount
+
+    if (
+      characterCount >=
+      this.maxLengthValue
+    ) {
+      this.counterTarget.classList.add(
+        "text-danger"
+      )
+
+      this.counterTarget.classList.remove(
+        "text-muted"
+      )
+    } else {
+      this.counterTarget.classList.remove(
+        "text-danger"
+      )
+
+      this.counterTarget.classList.add(
+        "text-muted"
+      )
+    }
+  }
+
+  validate() {
+    if (!this.hasSubmitTarget) {
+      return
+    }
+
+    this.submitTarget.disabled =
+      !this.allRequiredFieldsFilled()
+  }
+
+  allRequiredFieldsFilled() {
+    const requiredFields = [
+      this.nameTarget,
+      this.emailTarget,
+      this.ageTarget,
+      this.courseTarget,
+      this.cityTarget,
+      this.marksTarget
+    ]
+
+    if (this.hasTeacherTarget) {
+      requiredFields.push(
+        this.teacherTarget
+      )
+    }
+
+    return requiredFields.every(
+      (field) =>
+        field.value.trim().length > 0
+    )
+  }
+}

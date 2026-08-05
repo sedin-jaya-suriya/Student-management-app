@@ -5,13 +5,13 @@ class DashboardController < ApplicationController
   # Public landing page for the app
   def index
     return redirect_to admin_dashboard_path if user_signed_in? && current_user.admin?
-    return redirect_to teacher_dashboard_path if user_signed_in? && current_user.teacher?
+    redirect_to teacher_dashboard_path if user_signed_in? && current_user.teacher?
   end
-  
+
   def home
     return redirect_to admin_dashboard_path if current_user.admin?
     return redirect_to teacher_dashboard_path if current_user.teacher?
-    redirect_to root_path,alert: "Unauthorized access."
+    redirect_to root_path, alert: "Unauthorized access."
   end
 
   def admin
@@ -33,4 +33,4 @@ class DashboardController < ApplicationController
     @total_students = students.count
     @course_counts = students.group(:course).count
   end
-end 
+end
