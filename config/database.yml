@@ -16,4 +16,6 @@ test:
   database: student_management_test
 
 production:
-  url: <%= ENV["DATABASE_URL"] %>
+  primary:
+    adapter: postgresql
+    url: <%= ENV["DATABASE_URL"] %>
